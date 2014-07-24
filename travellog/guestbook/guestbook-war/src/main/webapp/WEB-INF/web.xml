@@ -76,7 +76,7 @@
 
 <servlet>
   <servlet-name>getTrips</servlet-name>
-  <servlet-class>com.google.appengine.demos.guestbook.GetTripFromUserServlet</servlet-class>
+  <servlet-class>com.google.appengine.demos.guestbook.GetTripsFromUserServlet</servlet-class>
 </servlet>
 
 <servlet-mapping>

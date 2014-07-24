@@ -6,7 +6,7 @@ Util = (function(){
     aqua= '#B1F2EF',
     teal='#5A9491',
     lgter_aqua='#cff8f6';
-    console.log("util exists");
+
     return {
         yellow: yellow,
         aqua: aqua,
@@ -31,6 +31,7 @@ Util = (function(){
     function addNewTrip(body){
         var modal = Util.makeModal('addTrip', "Add Trip",false);
         body.append(modal);
+
         var rowwrapper = $(document.createElement('div'));
         //for submit purpose
         var addTripform = $(document.createElement('form'));
@@ -171,6 +172,7 @@ Util = (function(){
             submit_input.submit();
             submit_input.click();
         });
+        return modal;
     }
 
     //get value from local storage
@@ -336,7 +338,7 @@ Util = (function(){
                 icon.addClass('glyphicon glyphicon-calendar');
                 btn.append(icon);
                 wrapper.append(btn);
-                wrapper.datetimepicker({ //SA: commented out b/c was getting error ****
+                wrapper.datetimepicker({ //SA: temporarily commented out b/c was getting error ****
                     // pickTime: false,
                 });
                 break;

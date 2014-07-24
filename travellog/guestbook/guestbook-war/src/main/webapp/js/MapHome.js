@@ -23,6 +23,8 @@ MapHome = (function(){
 		'data-target':"#addTrip",
 		'data-toggle':"modal",
 	});
+  //addbtn.attr("id", "addTrip");
+  addbtn.addClass("addTrip");
 	addbtn.css({
 		'background-color':'#00868B',
 	});
@@ -32,10 +34,19 @@ MapHome = (function(){
  var mapCanvas = document.createElement('div');
  var $mapCanvas = $(mapCanvas);
  $mapCanvas.addClass("col-md-10 col-md-offset-1");
+ $mapCanvas.attr("id", "map-canvas");
  $mapCanvas.css({
  	'height':'500px',
  })
  contentDiv.append($mapCanvas);
+ var userKey = Util.getQueryVariable("userKey");
+    if(userKey != null) {
+        // console.log("user key was not null, setting param")
+        var tripbutton = $(document.getElementById("trips_button"));
+        tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+        var mapbutton = $(document.getElementById("maps_button"));
+        mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
+    }
   /*
 function that initialize the map in the page
 */
@@ -50,20 +61,77 @@ function that initialize the map in the page
 			myOptions);
 		//setMarkers(map, beaches);
     // Create the search box and link it to the UI element.
+     var markers = [];
     var input = (document.getElementById('pac-input'));
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     var searchBox = new google.maps.places.SearchBox((input));
+      // Listen for the event fired when the user selects an item from the
+  // pick list. Retrieve the matching places for that item.
+  google.maps.event.addListener(searchBox, 'places_changed', function() {
+    var places = searchBox.getPlaces();
 
-		//loadTripsEx(map); //loads one trip at 0, 0
-		var userKey = Util.getQueryVariable("userKey");
-		if(userKey != null) {
-        // console.log("user key was not null, setting param")
-        var tripbutton = $(document.getElementById("trips_button"));
-        tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
-        var mapbutton = $(document.getElementById("maps_button"));
-        mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
+    if (places.length == 0) {
+      return;
     }
+   /*for (var i = 0, marker; marker = markers[i]; i++) {
+      marker.setMap(null);
+    }*/
+
+    // For each place, get the icon, place name, and location.
+    markers = [];
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0, place; place = places[i]; i++) {
+        var location = {
+        lat: place.geometry.location.latitude,
+        lon: place.geometry.location.longitude,
+        title: place.name,
+        description: "",
+        link: "#",
+        depDate: "start",
+        retDate: "end",
+        tags: "",
+        img: "images/stamp.png",
+        location: place.name,
+        index: 1,
+        tripKey: "",
+        userKey: userKey,
+      };
+     
+      var image = {
+        url: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpin.png",
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(40, 40),
+        shadow: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpins.png"
+      };
+
+      // Create a marker for each place.
+      var marker = new google.maps.Marker({
+        map: map,
+        icon: image,
+        title: place.name,
+        position: place.geometry.location,
+        animation: google.maps.Animation.DROP,
+      });
+
+      markers.push(marker);
+      setNewTripInfoWindow(map, marker, location);
+
+      bounds.extend(place.geometry.location);
+    }
+
+    map.fitBounds(bounds);
+  });
+
+  // Bias the SearchBox results towards places that are within the bounds of the
+  // current map's viewport.
+  google.maps.event.addListener(map, 'bounds_changed', function() {
+    var bounds = map.getBounds();
+    searchBox.setBounds(bounds);
+  });
+		
    // loadTrips(map, userKey);
    loadTripsEx(map);
 }
@@ -189,13 +257,16 @@ function setMarkers(map, locations, type) {
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < locations.length; i++) {
   if(type == "entry") { /* anything special for entries? */ }
-  if(type == "trip") { /* anything special for entries? */ }
-  	var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
+  else if(type == "trip") { /* anything special for trips? */ }
+  else if(type == "newTrip"){  };
+  var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
   var marker = new google.maps.Marker({
   	position: myLatLng,
   	map: map,
+    icon: {url: "./images/pushpin.png", scaledSize: new google.maps.Size(40, 40) },
   	title: locations[i].title,
   	zIndex: locations[i].index,
+    animation: google.maps.Animation.DROP,
   });
   bounds.extend(myLatLng);
   setInfoWindow(map, marker, locations[i], "google.com");
@@ -203,6 +274,46 @@ function setMarkers(map, locations, type) {
   map.fitBounds(bounds);
 }
 
+function setNewTripInfoWindow(map, marker, spec) {
+var thumbW,thumbH;
+
+  //var modal = Util.addNewTrip(contentDiv); //modal id = spec.title+spec.location
+  //modal.attr("id", spec.location);
+    function openmodal(id){
+      console.log("open modal");
+     $(document.getElementById(id)).modal({show:true});
+     $("addTrip").click();
+    }
+    var clicktrip = "'.addTrip'";
+    var locationstring = "'" + spec.location + "'";
+  //var id = spec.title+spec.location;
+  var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
+  ' <script src="../js/util/jquery-1.10.2.min.js"></script>'+
+          '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
+  ' <script type="text/javascript" src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
+  ' <script type="text/javascript" src="js/util/datepicker/js/bootstrap-datetimepicker.min.js"></script>'+
+  '<link rel="stylesheet" href="js/util/datepicker/css/bootstrap-datetimepicker.min.css" />'+
+  '<script type="text/javascript" src="js/util/node_modules/moment/moment.js"></script>'+
+  '<script src="js/jquery.validate.js"></script>'+
+  '<h1 id="firstHeading" class="firstHeading" style="font:1em">'+spec.title+'</h1>'+
+  '<p><button class="btn btn-primary" onclick="$(' + clicktrip + ').click(); console.log(' + spec.location + '); ' +
+  '$(' + clicktrip + ').getElementsByName(' + "'" + 'location' + "'" + ')[0].setAttribute('+ "'value', " + locationstring + ');' +
+  '">Add Trip</button></p>'+ '<style>.btn-primary, .btn-primary:hover, .btn-primary:active { background-color: #00868B; border: #00868B; }</style>';
+
+      var infowindow = new google.maps.InfoWindow({
+       content: contentString
+     });
+
+
+  google.maps.event.addListener(marker, 'click', function() {
+    /*function openModal(id){
+      $(document.getElementById(id)).modal({show:true});
+    } */
+
+  infowindow.open(map,marker);
+
+  });
+}
 //TODO: link or button to trip or entry, make title, img, and description as a spec so we
 //don't need to pass a long list of params 
 //TODO: maybe add photo previews
@@ -229,12 +340,14 @@ function setInfoWindow(map, marker, spec, link) {
      			'<button class="btn btn-primary" style="margin-left: 90px; margin-top: 20px">View</button>'+
      			'</a>' +
              '<a><button class="btn btn-primary" id=editBtn'+spec.img+' style="margin-left: 90px; margin-top: 30px" onclick="openModal()">Edit</button></a>'+
-             '<a><button class="btn btn-primary" id=deleteBtn'+spec.img+' style="margin-left: 90px; margin-top: 40px" onclick="openModal()">Delete</button></a>'+
+             '<a><button class="btn btn-primary" id=deleteBtn'+spec.img+' style="background-color: margin-left: 90px; margin-top: 40px" onclick="openModal()">Delete</button></a>'+
           '</div>'+
    	 '<img src='+ spec.img + ' style="width: 338"/>'+
       '</div>'+
       '</div>'+ //end of grid
-                 '<p>' + spec.description + '</p>'
+                 '<p>' + spec.description + '</p>'+
+                 '<style>.btn-primary, .btn-primary:hover, .btn-primary:active { background-color: #00868B; border: #00868B; }</style>';
+
 
       var infowindow = new google.maps.InfoWindow({
      	 content: contentString
@@ -285,5 +398,4 @@ function setInfoWindow(map, marker, spec, link) {
   });
 
 }
-
 })();
