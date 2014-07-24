@@ -93,7 +93,7 @@ function that initialize the map in the page
         tags: "",
         img: "images/stamp.png",
         location: place.name,
-        index: 1,
+        index: i,
         tripKey: "",
         userKey: userKey,
       };
@@ -265,7 +265,7 @@ function setMarkers(map, locations, type) {
   	map: map,
     icon: {url: "./images/pushpin.png", scaledSize: new google.maps.Size(40, 40) },
   	title: locations[i].title,
-  	zIndex: locations[i].index,
+  	zIndex: 1,
     animation: google.maps.Animation.DROP,
   });
   bounds.extend(myLatLng);
@@ -276,18 +276,24 @@ function setMarkers(map, locations, type) {
 
 function setNewTripInfoWindow(map, marker, spec) {
 var thumbW,thumbH;
-
-  //var modal = Util.addNewTrip(contentDiv); //modal id = spec.title+spec.location
+var d = new Date();
+  var id = d.getTime() + spec.index;
+  var modal = Util.editBtn("NewTrip", spec); //modal id = spec.title+spec.location
   //modal.attr("id", spec.location);
-    function openmodal(id){
+    function openModal(){
       console.log("open modal");
-     $(document.getElementById(id)).modal({show:true});
-     $("addTrip").click();
+      modal.modal({show:true});
+    //  $(document.getElementsByName("location")[0]).attr("value", spec.location);
+     //$(document.getElementById(id)).modal({show:true});
+    // $(".addTrip").click();
+    // $(".addTrip").getElementsByName("location").setAttribute("value", spec.location);
     }
-    var clicktrip = "'.addTrip'";
+    //onclick="$(' + clicktrip + ').click();'
+    var buttonid = "addTrip" + id;
     var locationstring = "'" + spec.location + "'";
   //var id = spec.title+spec.location;
-  var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
+  var contentString = '<div id="infoWindowDiv>'
+  +'<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
   ' <script src="../js/util/jquery-1.10.2.min.js"></script>'+
           '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
   ' <script type="text/javascript" src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
@@ -296,14 +302,26 @@ var thumbW,thumbH;
   '<script type="text/javascript" src="js/util/node_modules/moment/moment.js"></script>'+
   '<script src="js/jquery.validate.js"></script>'+
   '<h1 id="firstHeading" class="firstHeading" style="font:1em">'+spec.title+'</h1>'+
-  '<p><button class="btn btn-primary" onclick="$(' + clicktrip + ').click(); console.log(' + spec.location + '); ' +
-  '$(' + clicktrip + ').getElementsByName(' + "'" + 'location' + "'" + ')[0].setAttribute('+ "'value', " + locationstring + ');' +
-  '">Add Trip</button></p>'+ '<style>.btn-primary, .btn-primary:hover, .btn-primary:active { background-color: #00868B; border: #00868B; }</style>';
+  '<p><button class="btn btn-primary" id="'+ buttonid + '"'+
+  '>Add Trip</button></p>'+ 
+  '<style>.btn-primary, .btn-primary:hover, .btn-primary:active { background-color: #00868B; border: #00868B; }</style>'+
+  '</div>';
 
       var infowindow = new google.maps.InfoWindow({
        content: contentString
      });
 
+      /*infowindow.$("#addTrip").click(function(){
+        console.log("UYES");
+      });*/
+
+google.maps.event.addListener(infowindow,'domready',function(){
+  console.log("domready yay");
+     $('#'+buttonid).click(function() {
+        console.log("clicked add trip!");
+        openModal();
+     });
+  });
 
   google.maps.event.addListener(marker, 'click', function() {
     /*function openModal(id){
@@ -314,6 +332,7 @@ var thumbW,thumbH;
 
   });
 }
+
 //TODO: link or button to trip or entry, make title, img, and description as a spec so we
 //don't need to pass a long list of params 
 //TODO: maybe add photo previews
