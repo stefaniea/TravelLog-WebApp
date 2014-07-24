@@ -277,21 +277,16 @@ function setMarkers(map, locations, type) {
 function setNewTripInfoWindow(map, marker, spec) {
 var thumbW,thumbH;
 var d = new Date();
-  var id = d.getTime() + spec.index;
+var id = d.getTime() + spec.index;
+var buttonid = "addTrip" + id;
+
   var modal = Util.editBtn("NewTrip", spec); //modal id = spec.title+spec.location
-  //modal.attr("id", spec.location);
     function openModal(){
       console.log("open modal");
       modal.modal({show:true});
-    //  $(document.getElementsByName("location")[0]).attr("value", spec.location);
-     //$(document.getElementById(id)).modal({show:true});
-    // $(".addTrip").click();
-    // $(".addTrip").getElementsByName("location").setAttribute("value", spec.location);
     }
-    //onclick="$(' + clicktrip + ').click();'
-    var buttonid = "addTrip" + id;
-    var locationstring = "'" + spec.location + "'";
-  //var id = spec.title+spec.location;
+    
+
   var contentString = '<div id="infoWindowDiv>'
   +'<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
   ' <script src="../js/util/jquery-1.10.2.min.js"></script>'+
@@ -311,9 +306,6 @@ var d = new Date();
        content: contentString
      });
 
-      /*infowindow.$("#addTrip").click(function(){
-        console.log("UYES");
-      });*/
 
 google.maps.event.addListener(infowindow,'domready',function(){
   console.log("domready yay");
@@ -324,12 +316,7 @@ google.maps.event.addListener(infowindow,'domready',function(){
   });
 
   google.maps.event.addListener(marker, 'click', function() {
-    /*function openModal(id){
-      $(document.getElementById(id)).modal({show:true});
-    } */
-
   infowindow.open(map,marker);
-
   });
 }
 

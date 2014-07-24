@@ -7,6 +7,39 @@
    <meta name="description" content="">
    <meta name="author" content="">
    <!--<link rel="icon" href="../assets/ico/favicon.ico">-->
+   <style>
+   .controls {
+        margin-top: 16px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+   #pac-input {
+        background-color: #fff;
+        padding: 0 11px 0 13px;
+        width: 400px;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        text-overflow: ellipsis;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+        margin-left: -1px;
+        padding-left: 14px;  /* Regular padding-left + 1. */
+        width: 401px;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+   </style>
 
    <title>Welcome to TravelLog</title>
    <!-- Tags Input-->
@@ -60,6 +93,7 @@
      </div>
    </div><!--/.nav-collapse -->
    <div id="main" class="container-fluid"><div id="contentDiv" class="row"></div></div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
    <div id="footer" class="footer"><p>Copyright (c) Caterpillar</p></div>
    <!-- Bootstrap core JavaScript
@@ -76,12 +110,15 @@
    <link rel="stylesheet" href="js/util/datepicker/css/bootstrap-datetimepicker.min.css" />
    <script type="text/javascript" src="js/util/datepicker/js/bootstrap-datetimepicker.min.js"></script>
    <!-- Google maps -->
-   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 
   <script src="js/jquery.validate.js"></script>
    <script src="js/Util.js"></script>
    <script src="js/MapHome.js"></script>
+   <script>
+
+   </script>
 
  </body>
 

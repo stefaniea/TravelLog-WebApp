@@ -79,6 +79,21 @@
   <servlet-class>com.google.appengine.demos.guestbook.GetTripsFromUserServlet</servlet-class>
 </servlet>
 
+<servlet>
+  <servlet-name>getTrip</servlet-name>
+  <servlet-class>com.google.appengine.demos.guestbook.GetTripFromKeyServlet</servlet-class>
+</servlet>
+
+<servlet>
+  <servlet-name>getEntry</servlet-name>
+  <servlet-class>com.google.appengine.demos.guestbook.GetEntryFromKeyServlet</servlet-class>
+</servlet>
+
+<servlet>
+  <servlet-name>getEntries</servlet-name>
+  <servlet-class>com.google.appengine.demos.guestbook.GetEntriesFromTripServlet</servlet-class>
+</servlet>
+
 <servlet-mapping>
   <servlet-name>guestbook</servlet-name>
   <url-pattern>/guestbook</url-pattern>
@@ -152,6 +167,21 @@
 <servlet-mapping>
   <servlet-name>getTrips</servlet-name>
   <url-pattern>/getTrips</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+  <servlet-name>getTrip</servlet-name>
+  <url-pattern>/getTrip</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+  <servlet-name>getEntry</servlet-name>
+  <url-pattern>/getEntry</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+  <servlet-name>getEntries</servlet-name>
+  <url-pattern>/getEntries</url-pattern>
 </servlet-mapping>
 
 <welcome-file-list>

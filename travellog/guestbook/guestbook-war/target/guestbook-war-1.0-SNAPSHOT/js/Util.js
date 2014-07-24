@@ -6,7 +6,7 @@ Util = (function(){
     aqua= '#B1F2EF',
     teal='#5A9491',
     lgter_aqua='#cff8f6';
-    console.log("util exists");
+
     return {
         yellow: yellow,
         aqua: aqua,
@@ -31,6 +31,7 @@ Util = (function(){
     function addNewTrip(body){
         var modal = Util.makeModal('addTrip', "Add Trip",false);
         body.append(modal);
+
         var rowwrapper = $(document.createElement('div'));
         //for submit purpose
         var addTripform = $(document.createElement('form'));
@@ -171,6 +172,7 @@ Util = (function(){
             submit_input.submit();
             submit_input.click();
         });
+        return modal;
     }
 
     //get value from local storage
@@ -336,7 +338,7 @@ Util = (function(){
                 icon.addClass('glyphicon glyphicon-calendar');
                 btn.append(icon);
                 wrapper.append(btn);
-                wrapper.datetimepicker({ //SA: commented out b/c was getting error ****
+                wrapper.datetimepicker({ //SA: temporarily commented out b/c was getting error ****
                     // pickTime: false,
                 });
                 break;
@@ -668,7 +670,16 @@ Util = (function(){
              $(document.getElementById(modalId + "savebtn")).click(function(){
                 contentForm.submit();
             });
-         } else {
+         } 
+         else if (type === "NewTrip"){
+            modalId = spec.location + spec.index;
+            modal=makeModal(modalId, "Add a Trip", false);  
+             //submission functionality:
+             $(document.getElementById(modalId + "savebtn")).click(function(){
+                contentForm.submit();
+            });
+         }
+         else {
             modalId="image"+spec.picfile.name;
             modal=makeModal(modalId, "Edit Photo", false);
         }
@@ -694,7 +705,9 @@ Util = (function(){
             thumbnail.attr('id',title+"modal");
         }
         else if(type!=="Trip"){
-            thumbnail.attr('id',spec.picfile.name+"modalthumb");    
+            if(type!=="NewTrip") {
+            thumbnail.attr('id',spec.picfile.name+"modalthumb");   
+            } 
         }
         thumbDiv.append(thumbnail);
         thumbnail.attr('src',thumb);
@@ -715,8 +728,9 @@ Util = (function(){
 
         contentForm.append(submit_input);
         
-        if(type==="Trip"){
+        if(type==="Trip" || type == "NewTrip"){
             contentForm.attr('action', '/editTrip?tripKey='+spec.tripkey);
+            if(type === "NewTrip")  contentForm.attr('action', '/addTrip?userKey='+spec.userKey);
             contentForm.attr('method', 'post')
             var startDiv = $(document.createElement('div'));
             startDiv.addClass("row col-md-10 col-sm-offset-1");
@@ -773,7 +787,8 @@ Util = (function(){
             'width':'100%',
             'resize':'none',
         });
-        if(description==""){
+
+        if(description=="" && type!=="NewTrip"){
             text.val("Click Edit to add description for the photo")
         }else
             text.val(description);
@@ -811,7 +826,7 @@ Util = (function(){
         }
         var closebtn = $(document.getElementById(modalId+'closebtn'));
         closebtn.click(function(){//make sure the input get reset when close
-            if(type==="Trip"){
+            if(type==="Trip" || type==="NewTrip"){
                 $(ctform.querySelectorAll('[name=title]')).val(spec.title);
                 $(ctform.querySelectorAll('[name=depDate]')).val(spec.depDate);
                 $(ctform.querySelectorAll('[name=retDate]')).val(spec.retDate);
