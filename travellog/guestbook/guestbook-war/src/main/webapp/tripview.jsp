@@ -120,9 +120,9 @@
                <h1 id="tripTitle">${fn:escapeXml(trip_title)}</h1> </a>
                 <%
         //make sure the date is legit.  if not, don't include it at all
-                if(startDate != null  && startDate != "" && endDate != null && endDate != "") {
+                if(startDate != null  && startDate != "" && endDate != null && endDate != "${fn:escapeXml(trip_return)}") {
                 %>
-                <h2 id="tripDate">${fn:escapeXml(trip_depart)} to ${fn:escapeXml(trip_return)}</h2>
+                <h2 id="tripDate" start="${fn:escapeXml(trip_depart)}" end="">${fn:escapeXml(trip_depart)} to ${fn:escapeXml(trip_return)}</h2>
                 <%
         } //end of if depart date and return date are null
         %>
@@ -150,7 +150,7 @@
 
       List<String> photoKeys = (List<String>) entry.getProperty("photos");
       %>
-      <script>console.log("entry here");</script>
+      //<script>console.log("entry here");</script>
       <div class="entry" style="padding-top: 100px; display:none">
         <input class="Entrytitle" value = "${fn:escapeXml(entry_title)}"></input>
         <input class="EntryDescription" value="${fn:escapeXml(entry_description)}"></input>

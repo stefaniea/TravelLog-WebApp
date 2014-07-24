@@ -139,14 +139,15 @@ Homepage = (function(){
         btngroup.addClass('row');
         captionDiv.append(btngroup);
         
-        var modal = Util.editBtn("Trip",spec);
-        var editbtn = $(document.createElement('button'));
-        editbtn.text("Edit");
-        editbtn.addClass("btn btn-default col-sm-offset-2");
-        editbtn.click(function(){
-            //open a modal to edit info about the photo
-            modal.modal({show:true});
-        });
+        // var modal = Util.editBtn("Trip",spec);
+        // var editbtn = $(document.createElement('button'));
+        // editbtn.text("Edit");
+        // editbtn.addClass("btn btn-default col-sm-offset-2");
+        // editbtn.click(function(){
+        //     //open a modal to edit info about the photo
+        //     modal.modal({show:true});
+        // });
+        // btngroup.append(editbtn);
 
         var viewbtna = $(document.createElement('a'));
         var viewbtn = $(document.createElement('button'));
@@ -171,7 +172,6 @@ Homepage = (function(){
 
         });
         deleteForm.append(deletebtn);
-        btngroup.append(editbtn);
         btngroup.append(deleteDiv);
 
         btngroup.append(viewbtna);

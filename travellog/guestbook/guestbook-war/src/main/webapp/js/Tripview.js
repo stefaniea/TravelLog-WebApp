@@ -5,10 +5,28 @@ Tripview = (function(){
     if(userKey != null) {
         console.log("user key was not null, setting param")
     }
+    var tripKey = Util.getQueryVariable("tripKey");
+	var title = $(document.getElementById('tripTitle'));
+	var date=$(document.getElementById('tripDate'));
+	var location = $(document.getElementById('tripLocation'));
+	var description = $(document.getElementById('tripDescription'));
 
+    var tripspec={
+		title: title.text(),
+        description: description.text(),
+        location: location.text(),
+        //longitude: data.trips[i].longitude,
+        //latitude: data.trips[i].latitude,
+        tripkey: tripKey,
+        userkey: userKey,
+        depDate: date.attr("start"),
+        retDate: date.attr("end"),
+        //tags: data.trips[i].tags,
+        //link: link,
+        //img://src
+    };
     var tripbutton = $(document.getElementById("trips_button"));
     tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
-    var tripKey = Util.getQueryVariable("tripKey");
 
 	var body = $(document.getElementById("body"));
 	var main = $(document.createElement("div"));
@@ -27,11 +45,9 @@ Tripview = (function(){
 	contentDiv.addClass("row");
 
 	var titleDiv = $(document.createElement('div'));
-		
 	titleDiv.addClass('page-header col-md-12');
 	contentDiv.append(titleDiv);
 	//var title = $(document.createElement('h1'));
-	var title = $(document.getElementById('tripTitle'));
 	title.addClass('font-effect-fragile');
 	title.css({
 		'padding-top':'5px',
@@ -41,16 +57,14 @@ Tripview = (function(){
 	})
 
 	titleDiv.append(title);
-	var date=$(document.getElementById('tripDate'));
 	title.append(date);
-	var location = $(document.getElementById('tripLocation'));
+
 	location.css({
 		"font-family": "serif",
 		"font-size":"14",
 		"display" : "block"
 	});
 	titleDiv.append(location);
-	var description = $(document.getElementById('tripDescription'));
 		location.css({
 		"font-family": "serif",
 		"font-size":"12",
@@ -60,6 +74,25 @@ Tripview = (function(){
 	titleDiv.css({
 		'padding-top':'10px'
 	});
+
+	// var buttondiv = $(document.createElement("div"));
+	// buttondiv.addClass("row");
+	// buttondiv.css({
+	// 	'padding-bottom':'5px'
+	// });
+    var modal = Util.editBtn("Trip",tripspec);
+    var editbtn = $(document.createElement('button'));
+    editbtn.text("Edit Trip");
+    editbtn.css({
+    	'background-color':'#00868B',
+		'margin-bottom':'10px'
+    });
+    editbtn.addClass("btn btn-primary");
+    editbtn.click(function(){
+        //open a modal to edit info about the photo
+        modal.modal({show:true});
+    });
+    contentDiv.append(editbtn);
 
 	var addbtn = $(document.createElement('button'));
 	addbtn.addClass('btn btn-primary');
@@ -80,7 +113,7 @@ Tripview = (function(){
 	addEntryForm.append(addbtn);
 	// console.log("action of form is: " + addEntryForm.attr("action"));
 	contentDiv.append(addEntryForm);
-
+	// contentDiv.append(buttondiv);
 	//Here goes all the posts
 	var postsWrapper = $(document.createElement('div'));
 	postsWrapper.addClass('row');

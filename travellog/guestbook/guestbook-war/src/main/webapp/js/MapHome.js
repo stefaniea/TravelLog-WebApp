@@ -49,6 +49,12 @@ function that initialize the map in the page
 			mapCanvas,
 			myOptions);
 		//setMarkers(map, beaches);
+    // Create the search box and link it to the UI element.
+    var input = (document.getElementById('pac-input'));
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    var searchBox = new google.maps.places.SearchBox((input));
+
 		//loadTripsEx(map); //loads one trip at 0, 0
 		var userKey = Util.getQueryVariable("userKey");
 		if(userKey != null) {

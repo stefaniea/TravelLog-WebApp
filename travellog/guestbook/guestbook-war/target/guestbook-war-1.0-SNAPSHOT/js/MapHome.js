@@ -28,17 +28,17 @@ MapHome = (function(){
 	});
    Util.addNewTrip(body);//initial add new trip modal
 
-   //here goes the map outtermost div
-   var mapCanvas = document.createElement('div');
-   var $mapCanvas = $(mapCanvas);
-   $mapCanvas.addClass("col-md-10 col-md-offset-1");
-   $mapCanvas.css({
-   	'height':'500px',
-   })
-   contentDiv.append($mapCanvas);
-    /*
-	function that initialize the map in the page
-	*/
+ //here goes the map outtermost div
+ var mapCanvas = document.createElement('div');
+ var $mapCanvas = $(mapCanvas);
+ $mapCanvas.addClass("col-md-10 col-md-offset-1");
+ $mapCanvas.css({
+ 	'height':'500px',
+ })
+ contentDiv.append($mapCanvas);
+  /*
+function that initialize the map in the page
+*/
 	function initialize() {
 		var myOptions = {
 			zoom: 10,
@@ -179,22 +179,22 @@ function loadEntries(tripkey) {
 
 
 function setMarkers(map, locations, type) {
-//TODO: custom pins
-var bounds = new google.maps.LatLngBounds();
-for (var i = 0; i < locations.length; i++) {
-if(type == "entry") { /* anything special for entries? */ }
-if(type == "trip") { /* anything special for entries? */ }
-	var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
-var marker = new google.maps.Marker({
-	position: myLatLng,
-	map: map,
-	title: locations[i].title,
-	zIndex: locations[i].index,
-});
-bounds.extend(myLatLng);
-setInfoWindow(map, marker, locations[i], "google.com");
-}
-map.fitBounds(bounds);
+  //TODO: custom pins
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < locations.length; i++) {
+  if(type == "entry") { /* anything special for entries? */ }
+  if(type == "trip") { /* anything special for entries? */ }
+  	var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
+  var marker = new google.maps.Marker({
+  	position: myLatLng,
+  	map: map,
+  	title: locations[i].title,
+  	zIndex: locations[i].index,
+  });
+  bounds.extend(myLatLng);
+  setInfoWindow(map, marker, locations[i], "google.com");
+  }
+  map.fitBounds(bounds);
 }
 
 //TODO: link or button to trip or entry, make title, img, and description as a spec so we
@@ -204,97 +204,79 @@ map.fitBounds(bounds);
 the info window for each pin.
 */
 function setInfoWindow(map, marker, spec, link) {
-// var img = new Image();
-// img.src=spec.img;
-// var imgH=img.height;
-// var imgW=img.width;
-var thumbW,thumbH;
-// if(imgW/imgH>1){
-// thumbW=300;
-// thumbH = thumbW*imgH/imgW;
-// }else{
-// thumbH=255;
-// thumbW = thumbH*imgW/imgH;
-// }
-// function getWidthAndHeight() {
-//     return ;
-// }
+  var thumbW,thumbH;
 
-var modal = Util.editBtn("Trip",spec);//modal id = spec.title+spec.location
-	function openModal(id){
-		console.log("open modal");
-		$(document.getElementById(id)).modal({show:true});
-	}
-var id = spec.title+spec.location;
-var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
-        '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
-' <script src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
-'<h1 id="firstHeading" class="firstHeading" style="font:1em">'+spec.title+'</h1>'+
-'<div id="grid" class="main">'+
-    '<div class="view">'+
-        '<div class="view-back">'+
-           '<a href='+spec.link+'>'+
-   			'<button class="btn btn-primary" style="margin-left: 90px; margin-top: 20px">View</button>'+
-   			'</a>' +
-           '<a><button class="btn btn-primary" id=editBtn'+spec.img+' style="margin-left: 90px; margin-top: 30px" onclick="openModal()">Edit</button></a>'+
-           '<a><button class="btn btn-primary" id=deleteBtn'+spec.img+' style="margin-left: 90px; margin-top: 40px" onclick="openModal()">Delete</button></a>'+
-   			
-   			
-        '</div>'+
- 	 '<img src='+ spec.img + ' style="width: 338"/>'+
-    '</div>'+
-    '</div>'+ //end of grid
-               '<p>' + spec.description + '</p>'
+  var modal = Util.editBtn("Trip",spec);//modal id = spec.title+spec.location
+  	function openModal(id){
+  		console.log("open modal");
+  		$(document.getElementById(id)).modal({show:true});
+  	}
+  var id = spec.title+spec.location;
+  var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
+          '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
+  ' <script src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
+  '<h1 id="firstHeading" class="firstHeading" style="font:1em">'+spec.title+'</h1>'+
+  '<div id="grid" class="main">'+
+      '<div class="view">'+
+          '<div class="view-back">'+
+             '<a href='+spec.link+'>'+
+     			'<button class="btn btn-primary" style="margin-left: 90px; margin-top: 20px">View</button>'+
+     			'</a>' +
+             '<a><button class="btn btn-primary" id=editBtn'+spec.img+' style="margin-left: 90px; margin-top: 30px" onclick="openModal()">Edit</button></a>'+
+             '<a><button class="btn btn-primary" id=deleteBtn'+spec.img+' style="margin-left: 90px; margin-top: 40px" onclick="openModal()">Delete</button></a>'+
+          '</div>'+
+   	 '<img src='+ spec.img + ' style="width: 338"/>'+
+      '</div>'+
+      '</div>'+ //end of grid
+                 '<p>' + spec.description + '</p>'
 
-    var infowindow = new google.maps.InfoWindow({
-   	 content: contentString
-   });
-// function openModal(id){
-// $(document.getElementById(id)).modal({show:true});
-// }
+      var infowindow = new google.maps.InfoWindow({
+     	 content: contentString
+     });
 
-google.maps.event.addListener(marker, 'click', function() {
-	function openModal(id){
-		$(document.getElementById(id)).modal({show:true});
-	}
 
-	Modernizr.load({
-        test: Modernizr.csstransforms3d && Modernizr.csstransitions,
-        yep : ["http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js","3DHoverEffects/js/jquery.hoverfold.js"],
-        nope: "3DHoverEffects/css/fallback.css",
-        callback : function( url, result, key ) {
-          if( url === "3DHoverEffects/js/jquery.hoverfold.js" ) {
-        $( "#grid" ).hoverfold();
+  google.maps.event.addListener(marker, 'click', function() {
+  	function openModal(id){
+  		$(document.getElementById(id)).modal({show:true});
+  	}
+
+  	Modernizr.load({
+          test: Modernizr.csstransforms3d && Modernizr.csstransitions,
+          yep : ["http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js","3DHoverEffects/js/jquery.hoverfold.js"],
+          nope: "3DHoverEffects/css/fallback.css",
+          callback : function( url, result, key ) {
+            if( url === "3DHoverEffects/js/jquery.hoverfold.js" ) {
+          $( "#grid" ).hoverfold();
+            }
           }
-        }
-      }); 
-	//infowindow.setContent(contentString);
-  // $(document.getElementById("editBtn"+spec.title+spec.location)).click(function(){
-     //       //open a modal to edit info about the photo
-     //       modal.modal({show:true});
-     //   });
+        }); 
+  	//infowindow.setContent(contentString);
+    // $(document.getElementById("editBtn"+spec.title+spec.location)).click(function(){
+       //       //open a modal to edit info about the photo
+       //       modal.modal({show:true});
+       //   });
 
-//uncomment this for thumbnail stuff:
-/*var img = $(document.getElementById(spec.img));
-img.onload;
-var imgH=img.height();
-var imgW=img.width();
-console.log("img height is"+imgH);
-var thumbW,thumbH;
-if(imgW/imgH>1){
-	thumbW=300;
-	thumbH = thumbW*imgH/imgW;
-}else{
-	thumbH=255;
-	thumbW = thumbH*imgW/imgH;
-}
-img.css({
-	'height':thumbW+'px',
-	'width':thumbH+'px',
-});*/
-infowindow.open(map,marker);
+  //uncomment this for thumbnail stuff:
+  /*var img = $(document.getElementById(spec.img));
+  img.onload;
+  var imgH=img.height();
+  var imgW=img.width();
+  console.log("img height is"+imgH);
+  var thumbW,thumbH;
+  if(imgW/imgH>1){
+  	thumbW=300;
+  	thumbH = thumbW*imgH/imgW;
+  }else{
+  	thumbH=255;
+  	thumbW = thumbH*imgW/imgH;
+  }
+  img.css({
+  	'height':thumbW+'px',
+  	'width':thumbH+'px',
+  });*/
+  infowindow.open(map,marker);
 
-});
+  });
 
 }
 
