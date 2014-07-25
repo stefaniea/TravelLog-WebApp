@@ -171,10 +171,10 @@ Homepage = (function(){
             modal.remove();
 
         });
+        btngroup.append(viewbtna);
         deleteForm.append(deletebtn);
         btngroup.append(deleteDiv);
 
-        btngroup.append(viewbtna);
         return colDiv;
     }
     /***
