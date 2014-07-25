@@ -378,49 +378,49 @@ Util = (function(){
     }
 
     function getTrip(tripKey) {
-    var trip = $.getJSON('getTrip?tripKey='+userKey, function(data) {
-        var src = "/getTripImage?tripKey=" + tripKey
-        console.log("trip json title"+data.trip.title);
-        console.log("trip json key"+data.trip.key);
+        var trip = $.getJSON('getTrip?tripKey='+userKey, function(data) {
+            var src = "/getTripImage?tripKey=" + tripKey
+            console.log("trip json title"+data.trip.title);
+            console.log("trip json key"+data.trip.key);
 
-     var trip_obj = {
-        title: data.trip.title,
-        description: data.trip.description,
-        location: data.trip.location,
-        tripkey: data.trip.key,
-        userkey: data.trip.userKey,
-        depDate: data.trip.departDate,
-        retDate: data.trip.returnDate,
-        tags: data.trip.tags,
-        img:src,
-        //lat: parseFloat(data.trip.latitude),  //TODO!!
-        //lon: parseFloat(data.trip.longitude),
-     };
-     return trip_obj;
- }
-});
-    return trip;
-}
+            var trip_obj = {
+                title: data.trip.title,
+                description: data.trip.description,
+                location: data.trip.location,
+                tripkey: data.trip.key,
+                userkey: data.trip.userKey,
+                depDate: data.trip.departDate,
+                retDate: data.trip.returnDate,
+                tags: data.trip.tags,
+                img:src,
+                //lat: parseFloat(data.trip.latitude),  //TODO!!
+                //lon: parseFloat(data.trip.longitude),
+            };
+            return trip_obj;
+        //}
+        });
+        return trip;
+    }
 
     function getEntry(entryKey) {
-    var entry = $.getJSON('getEntry?entryKey='+userKey, function(data) {
+        var entry = $.getJSON('getEntry?entryKey='+userKey, function(data) {
 
-     var entry_obj = {
-        title: data.entry.title,
-        description: data.entry.description,
-        location: data.entry.location,
-        tripkey: data.entry.tripKey,
-        entrykey: data.entry.key,
-        tags: data.entry.tags,
-        //lat: parseFloat(data.entry.latitude),  //TODO!!
-        //lon: parseFloat(data.entry.longitude),
-     };
-     return entry_obj;
+        var entry_obj = {
+            title: data.entry.title,
+            description: data.entry.description,
+            location: data.entry.location,
+            tripkey: data.entry.tripKey,
+            entrykey: data.entry.key,
+            tags: data.entry.tags,
+            //lat: parseFloat(data.entry.latitude),  //TODO!!
+            //lon: parseFloat(data.entry.longitude),
+         };
+         return entry_obj;
 
- }
-});
-    return entry;
-}
+     //}
+    });
+        return entry;
+    }
 
     /**
     function to create carousel, given a unique id for it, and number of pictures. 
@@ -786,8 +786,10 @@ Util = (function(){
 
             contentRow.append(startDiv);
             contentRow.append(endDiv);
-            start.data("DateTimePicker").setDate(spec.depDate);
-            end.data("DateTimePicker").setDate(spec.retDate);
+            if (spec.depDate)
+                start.data("DateTimePicker").setDate(spec.depDate);
+            if(spec.retDate)
+                end.data("DateTimePicker").setDate(spec.retDate);
             //make sure the start date is always in front of the end date
             start.on("dp.change",function (e) {
                 end.data("DateTimePicker").setMinDate(e.date);

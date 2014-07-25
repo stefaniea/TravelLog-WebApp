@@ -254,11 +254,12 @@ function loadEntries(tripkey) {
 
 function setMarkers(map, locations, type) {
   //TODO: custom pins
+  var iconurl;//we should have different icons for new trip, trip, entry, and new entry.
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < locations.length; i++) {
   if(type == "entry") { /* anything special for entries? */ }
   else if(type == "trip") { /* anything special for trips? */ }
-  else if(type == "newTrip"){  };
+  else if(type == "newTrip"){/**/};
   var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
   var marker = new google.maps.Marker({
   	position: myLatLng,
@@ -328,13 +329,14 @@ the info window for each pin.
 */
 function setInfoWindow(map, marker, spec, link) {
   var thumbW,thumbH;
-
   var modal = Util.editBtn("Trip",spec);//modal id = spec.title+spec.location
-  	function openModal(id){
-  		console.log("open modal");
-  		$(document.getElementById(id)).modal({show:true});
-  	}
+	function openModal(){
+		modal.modal({show:true});
+	}
   var id = spec.title+spec.location;
+  var editid= "editbtn"+id,
+      deleteformid = "deleteform"+id,
+      deleteid = "deletebtn"+id;
   var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
           '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
   ' <script src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
@@ -345,8 +347,8 @@ function setInfoWindow(map, marker, spec, link) {
              '<a href='+spec.link+'>'+
      			'<button class="btn btn-primary" style="margin-left: 90px; margin-top: 20px">View</button>'+
      			'</a>' +
-             '<a><button class="btn btn-primary" id=editBtn'+spec.img+' style="margin-left: 90px; margin-top: 30px" onclick="openModal()">Edit</button></a>'+
-             '<a><button class="btn btn-primary" id=deleteBtn'+spec.img+' style="background-color: margin-left: 90px; margin-top: 40px" onclick="openModal()">Delete</button></a>'+
+             '<a><button class="btn btn-primary" id="'+ editid + '" style="margin-left: 90px; margin-top: 30px">Edit</button></a>'+
+             '<form id="'+ deleteformid +' "><a><button class="btn btn-primary" id="'+ deleteid +' "style="margin-left: 90px; margin-top: 40px">Delete</button></a></form>'+
           '</div>'+
    	 '<img src='+ spec.img + ' style="width: 338"/>'+
       '</div>'+
@@ -359,11 +361,25 @@ function setInfoWindow(map, marker, spec, link) {
      	 content: contentString
      });
 
+  google.maps.event.addListener(infowindow,'domready',function(){
+    $(document.getElementById(editid)).click(function(){
+      openModal(id);
+    });
+    $(document.getElementById(deleteid)).click(function(){
+      modal.remove();
+      marker.setMap(null);
+      markers.remove(marker);
+    });
+    $(document.getElementById(deleteformid)).attr({
+      'method':'post',
+      'action': '/deleteTrip?tripKey=' + spec.tripkey + "&userKey=" + spec.userkey,
+    })
+  });
 
   google.maps.event.addListener(marker, 'click', function() {
-  	function openModal(id){
-  		$(document.getElementById(id)).modal({show:true});
-  	}
+  	// function openModal(id){
+  	// 	$(document.getElementById(id)).modal({show:true});
+  	// }
 
   	Modernizr.load({
           test: Modernizr.csstransforms3d && Modernizr.csstransitions,
