@@ -786,8 +786,10 @@ Util = (function(){
 
             contentRow.append(startDiv);
             contentRow.append(endDiv);
-            start.data("DateTimePicker").setDate(spec.depDate);
-            end.data("DateTimePicker").setDate(spec.retDate);
+            if (spec.depDate)
+                start.data("DateTimePicker").setDate(spec.depDate);
+            if(spec.retDate)
+                end.data("DateTimePicker").setDate(spec.retDate);
             //make sure the start date is always in front of the end date
             start.on("dp.change",function (e) {
                 end.data("DateTimePicker").setMinDate(e.date);

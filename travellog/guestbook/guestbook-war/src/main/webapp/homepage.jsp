@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -46,7 +45,7 @@
       <div id="stripnavbar" class="navbar-default navbar">
         <ul class="nav nav-pills">
           <li class="active"><a href="homepage.jsp" id="trips_button">Trips</a></li>
-          <li><a href="#">Locations</a></li>
+          <li><a href="MapHome.html" id="maps_button">View in Map</a></li>
         </ul>
       </div>
     </div><!--/.nav-collapse -->

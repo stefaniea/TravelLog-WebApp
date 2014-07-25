@@ -7,6 +7,8 @@ Homepage = (function(){
         // console.log("user key was not null, setting param")
         var tripbutton = $(document.getElementById("trips_button"));
         tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+        var mapsbutton = $(document.getElementById("maps_button"));
+        mapsbutton.attr("href","/MapHome.html?userKey="+userKey);
     }
     var body = $(document.getElementById("body"));
     var main = $(document.getElementById("main"));
@@ -171,10 +173,10 @@ Homepage = (function(){
             modal.remove();
 
         });
+        btngroup.append(viewbtna);
         deleteForm.append(deletebtn);
         btngroup.append(deleteDiv);
 
-        btngroup.append(viewbtna);
         return colDiv;
     }
     /***

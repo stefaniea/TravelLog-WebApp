@@ -132,8 +132,8 @@ function that initialize the map in the page
     searchBox.setBounds(bounds);
   });
 		
-   // loadTrips(map, userKey);
-   loadTripsEx(map);
+    loadTrips(map, userKey);
+   //loadTripsEx(map);
 }
 
 
