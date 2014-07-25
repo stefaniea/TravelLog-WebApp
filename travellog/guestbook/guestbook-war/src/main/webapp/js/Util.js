@@ -360,6 +360,9 @@ Util = (function(){
                 longitude.attr("name", "longitude");
                 latitude.css("display", "none");
                 latitude.attr("name", "latitude");
+                latitude.attr("value", "");//initialize lat/long as empty:
+                longitude.attr("value", " ");
+                longitude.innerHTML = " ";
                 wrapper.append(latitude);
                 wrapper.append(longitude);
                   google.maps.event.addListener(autocomplete, 'place_changed', function() {

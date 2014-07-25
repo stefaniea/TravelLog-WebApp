@@ -194,7 +194,9 @@ function loadTrips(map, userKey) {
 
      trips.push(trip_obj);
  }
+ console.log("get trips about to set markers");
  setMarkers(map, trips, "trips");
+ console.log("set markers");
 });
 }
 
@@ -257,6 +259,10 @@ function setMarkers(map, locations, type) {
   var iconurl;//we should have different icons for new trip, trip, entry, and new entry.
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < locations.length; i++) {
+    if(locations[i].lat === " " || locations[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
+    if(locations[i].lat == null || locations[i].lon == null) continue; 
+    if(locations[i].location == null || locations[i].location === "") continue;
+    console.log("marker again");
   if(type == "entry") { /* anything special for entries? */ }
   else if(type == "trip") { /* anything special for trips? */ }
   else if(type == "newTrip"){/**/};
@@ -270,8 +276,11 @@ function setMarkers(map, locations, type) {
     animation: google.maps.Animation.DROP,
   });
   bounds.extend(myLatLng);
+   console.log("setting info window");
   setInfoWindow(map, marker, locations[i], "google.com");
+  console.log("set info window");
   }
+
   map.fitBounds(bounds);
 }
 
@@ -356,12 +365,13 @@ function setInfoWindow(map, marker, spec, link) {
                  '<p>' + spec.description + '</p>'+
                  '<style>.btn-primary, .btn-primary:hover, .btn-primary:active { background-color: #00868B; border: #00868B; }</style>';
 
-
+console.log("set content string");
       var infowindow = new google.maps.InfoWindow({
      	 content: contentString
      });
-
+console.log("listeners");
   google.maps.event.addListener(infowindow,'domready',function(){
+    console.log("dom is ready");
     $(document.getElementById(editid)).click(function(){
       openModal(id);
     });
@@ -391,30 +401,6 @@ function setInfoWindow(map, marker, spec, link) {
             }
           }
         }); 
-  	//infowindow.setContent(contentString);
-    // $(document.getElementById("editBtn"+spec.title+spec.location)).click(function(){
-       //       //open a modal to edit info about the photo
-       //       modal.modal({show:true});
-       //   });
-
-  //uncomment this for thumbnail stuff:
-  /*var img = $(document.getElementById(spec.img));
-  img.onload;
-  var imgH=img.height();
-  var imgW=img.width();
-  console.log("img height is"+imgH);
-  var thumbW,thumbH;
-  if(imgW/imgH>1){
-  	thumbW=300;
-  	thumbH = thumbW*imgH/imgW;
-  }else{
-  	thumbH=255;
-  	thumbW = thumbH*imgW/imgH;
-  }
-  img.css({
-  	'height':thumbW+'px',
-  	'width':thumbH+'px',
-  });*/
   infowindow.open(map,marker);
 
   });
