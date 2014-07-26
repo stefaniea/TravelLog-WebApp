@@ -1,5 +1,10 @@
 MapHome = (function(){
   "use strict";
+  var userKey = Util.getQueryVariable("userKey");
+  if(userKey != null) {
+    console.log("user key was not null, setting param")
+  }
+  var tripKey = Util.getQueryVariable("tripKey");
   var body = $(document.getElementById("body"));
   var main = $(document.getElementById("main"));
   main.css({
@@ -58,12 +63,17 @@ MapHome = (function(){
   var buttonDiv = $(document.createElement('div'));
   buttonDiv.addClass('col-md-4');
   buttonDiv.css({'padding-bottom':'10px'});
+  var addEntryForm = $(document.createElement("form"));
+  addEntryForm.attr({
+    'method':'post',
+    'action':"/addentry.jsp?tripKey="+tripKey;
+  });
   var addbtn = $(document.createElement('button'));
   addbtn.addClass('btn btn-primary');
   addbtn.attr({
     'data-target':"#addEntryDiv",
     'data-toggle':"modal",
-    'left':'0px',
+    'left':'0px', 
     'position':'relative'
   });
   addbtn.text("Add Entry");
@@ -73,9 +83,8 @@ MapHome = (function(){
 
 
   //TODO: Uncomment below and remove buttonDiv when addEntryForm is ready
-  // var addEntryForm = $(document.getElementById("addEntryForm"));
-  // addEntryForm.append(addbtn);
-  buttonDiv.append(addbtn)
+  addEntryForm.append(addbtn);
+  buttonDiv.append(addEntryForm)
   contentDiv.append(buttonDiv);
     // console.log("action of form is: " + addEntryForm.attr("action"));
     // contentDiv.append(addEntryForm);
@@ -110,8 +119,8 @@ function that initialize the map in the page
         var mapbutton = $(document.getElementById("maps_button"));
         mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
     }
-   // loadTrips(map, userKey);
-     loadTripsEx(map);
+    loadEntries(map, tripKey);
+    // loadTripsEx(map);
   }
 
 
@@ -185,7 +194,7 @@ function that initialize the map in the page
     return location;
   }
 
-  function loadEntries(tripkey) {
+  function loadEntries(map,tripkey) {
     $.getJSON('getEntries?tripKey='+tripKey, function(data) {
       var entries = [];
       var i = 0;
