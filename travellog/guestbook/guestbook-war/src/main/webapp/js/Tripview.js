@@ -27,6 +27,8 @@ Tripview = (function(){
     };
     var tripbutton = $(document.getElementById("trips_button"));
     tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+    var entriesmap =$(document.getElementById("entries_map_button"));
+    entriesmap.attr("href", "/MapEntries.html?tripKey=" + tripKey);
 
 	var body = $(document.getElementById("body"));
 	var main = $(document.createElement("div"));

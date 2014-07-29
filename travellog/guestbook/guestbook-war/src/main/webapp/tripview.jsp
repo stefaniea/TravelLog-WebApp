@@ -75,7 +75,8 @@
                 <div id="stripnavbar" class="navbar-default navbar">
                   <ul class="nav nav-pills">
                     <li><a href="#" id="trips_button">Back to Trips</a></li>
-                    <li><a href="#">Locations</a></li>
+                    <li class="active"><a href="#">Entries List</a></li>
+                    <li><a href="#" id="entries_map_button">View on Map</a></li>
 
                   </ul>
                 </div>

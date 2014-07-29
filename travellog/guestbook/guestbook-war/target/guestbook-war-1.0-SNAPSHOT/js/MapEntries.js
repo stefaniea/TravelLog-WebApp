@@ -1,11 +1,21 @@
 MapHome = (function(){
   "use strict";
+  var userKey = Util.getQueryVariable("userKey");
+  if(userKey != null) {
+    console.log("user key was not null, setting param")
+  }
+  var tripKey = Util.getQueryVariable("tripKey");
   var body = $(document.getElementById("body"));
   var main = $(document.getElementById("main"));
   main.css({
     'height':'100%',
     'width':'100%',
   })
+  var tripbutton=$(document.getElementById("trips_button"))
+  tripbutton.attr("href", "/MapHome.html?userKey=" + userKey);
+  var entriesbutton=$(document.getElementById("entries_list"))
+  entriesbutton.attr("href","/tripview.jsp?tripKey=" + tripKey)
+
   var contentDiv = $(document.getElementById("contentDiv"));
   contentDiv.css('padding-bottom','100px');
   var titleDiv = $(document.createElement('div'));
@@ -58,12 +68,17 @@ MapHome = (function(){
   var buttonDiv = $(document.createElement('div'));
   buttonDiv.addClass('col-md-4');
   buttonDiv.css({'padding-bottom':'10px'});
+  var addEntryForm = $(document.createElement("form"));
+  addEntryForm.attr({
+    'method':'post',
+    'action':"/addentry.jsp?tripKey="+tripKey,
+  });
   var addbtn = $(document.createElement('button'));
   addbtn.addClass('btn btn-primary');
   addbtn.attr({
     'data-target':"#addEntryDiv",
     'data-toggle':"modal",
-    'left':'0px',
+    'left':'0px', 
     'position':'relative'
   });
   addbtn.text("Add Entry");
@@ -73,9 +88,8 @@ MapHome = (function(){
 
 
   //TODO: Uncomment below and remove buttonDiv when addEntryForm is ready
-  // var addEntryForm = $(document.getElementById("addEntryForm"));
-  // addEntryForm.append(addbtn);
-  buttonDiv.append(addbtn)
+  addEntryForm.append(addbtn);
+  buttonDiv.append(addEntryForm)
   contentDiv.append(buttonDiv);
     // console.log("action of form is: " + addEntryForm.attr("action"));
     // contentDiv.append(addEntryForm);
@@ -110,36 +124,36 @@ function that initialize the map in the page
         var mapbutton = $(document.getElementById("maps_button"));
         mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
     }
-   // loadTrips(map, userKey);
-     loadTripsEx(map);
+    loadEntries(map, tripKey);
+    // loadTripsEx(map);
   }
 
 
   google.maps.event.addDomListener(window, "load", initialize);
 
   //makes one trip at 0, 0
-  function loadTripsEx(map) {
-    var trips = [];
-    var trip_obj = {
-      title: "trip title",
-      description: "description bla bla bla bla asdfkjasdfkjhasdf",
-      location: "new york",
-      tripkey: "na",
-      userkey: "na",
-      depDate: "now",
-      retDate: "later",
-      tags: "great",
-      index: 0,
-      link: "google.com",
-      img: "images/4.jpg",
-      lat: 0,
-      lon: 0
-    };
+  // function loadTripsEx(map) {
+  //   var trips = [];
+  //   var trip_obj = {
+  //     title: "trip title",
+  //     description: "description bla bla bla bla asdfkjasdfkjhasdf",
+  //     location: "new york",
+  //     tripkey: "na",
+  //     userkey: "na",
+  //     depDate: "now",
+  //     retDate: "later",
+  //     tags: "great",
+  //     index: 0,
+  //     link: "google.com",
+  //     img: "images/4.jpg",
+  //     lat: 0,
+  //     lon: 0
+  //   };
 
-    trips.push(trip_obj);
-    setMarkers(map, trips, "trips");
+  //   trips.push(trip_obj);
+  //   setMarkers(map, trips, "trips");
 
-  }
+  // }
 
   function loadTrips(map, userKey) {
     $.getJSON('getTrips?userKey='+userKey, function(data) {
@@ -185,7 +199,7 @@ function that initialize the map in the page
     return location;
   }
 
-  function loadEntries(tripkey) {
+  function loadEntries(map,tripkey) {
     $.getJSON('getEntries?tripKey='+tripKey, function(data) {
       var entries = [];
       var i = 0;
@@ -213,12 +227,14 @@ function that initialize the map in the page
           title: data.entries[i].title,
           description: data.entries[i].description,
           location: data.entries[i].location,
+          link: '/entryPage.jsp?entryKey='+data.entries[i].key,
+
           tripkey: data.entries[i].tripKey,
-            entrykey: data.entries[i].key, //???this is coming as undefined...
-            index: i,
-            photos: photos,
-            lat: 0,
-            lon: 0,
+          entrykey: data.entries[i].key, //???this is coming as undefined...
+          index: i,
+          photos: photos,
+          lat: 0,
+          lon: 0,
         };
         console.log("entryobj json title"+entry_obj.title);
         console.log("entryobj json key"+entry_obj.entryKey);
@@ -230,21 +246,21 @@ function that initialize the map in the page
   }
 
 
-  function setMarkers(map, locations, type) {
+  function setMarkers(map, entries, type) {
     //TODO: custom pins
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < locations.length; i++) {
+    for (var i = 0; i < entries.length; i++) {
     if(type == "entry") { /* anything special for entries? */ }
     if(type == "trip") { /* anything special for entries? */ }
-      var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
+      var myLatLng = new google.maps.LatLng(entries[i].lat, entries[i].lon);
     var marker = new google.maps.Marker({
       position: myLatLng,
       map: map,
-      title: locations[i].title,
-      zIndex: locations[i].index,
+      title: entries[i].title,
+      zIndex: entries[i].index,
     });
     bounds.extend(myLatLng);
-    setInfoWindow(map, marker, locations[i], "google.com");
+    setInfoWindow(map, marker, entries[i], "google.com");
     }
     map.fitBounds(bounds);
   }

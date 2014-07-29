@@ -168,7 +168,7 @@ function loadTrips(map, userKey) {
 		var trips = [];
 		var i = 0;
 		for (var i =0; i < data.trips.length; i++) {
-			var link = "/tripview.jsp?tripKey=" + data.trips[i].key;
+			var link = "/MapEntries.html?tripKey=" + data.trips[i].key;
 			var src = "/getTripImage?tripKey=" + data.trips[i].key;
 			console.log("trip json title"+data.trips[i].title);
 			console.log("trip json key"+data.trips[i].key);
@@ -357,7 +357,7 @@ function setInfoWindow(map, marker, spec, link) {
      			'<button class="btn btn-primary" style="margin-left: 90px; margin-top: 20px">View</button>'+
      			'</a>' +
              '<a><button class="btn btn-primary" id="'+ editid + '" style="margin-left: 90px; margin-top: 30px">Edit</button></a>'+
-             '<form id="'+ deleteformid +' "><a><button class="btn btn-primary" id="'+ deleteid +' "style="margin-left: 90px; margin-top: 40px">Delete</button></a></form>'+
+             '<form id="'+ deleteformid +' " method="post" action="/deleteTrip?frommap=True&tripKey='+spec.tripkey+'&userKey='+spec.userkey+'"><a><button class="btn btn-primary" id="'+ deleteid +' "style="margin-left: 90px; margin-top: 40px">Delete</button></a></form>'+
           '</div>'+
    	 '<img src='+ spec.img + ' style="width: 338"/>'+
       '</div>'+
@@ -375,15 +375,6 @@ console.log("listeners");
     $(document.getElementById(editid)).click(function(){
       openModal(id);
     });
-    $(document.getElementById(deleteid)).click(function(){
-      modal.remove();
-      marker.setMap(null);
-      markers.remove(marker);
-    });
-    $(document.getElementById(deleteformid)).attr({
-      'method':'post',
-      'action': '/deleteTrip?tripKey=' + spec.tripkey + "&userKey=" + spec.userkey,
-    })
   });
 
   google.maps.event.addListener(marker, 'click', function() {

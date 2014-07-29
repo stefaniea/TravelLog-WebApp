@@ -28,6 +28,8 @@ editEntry = (function(){
 	}
 	var tripbutton = $(document.getElementById("trips_button"));
 	tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+	// var back2entry = $(document.getElementById("back2entry_button"));
+	// back2entry.attr("href", "/editEntry.jsp?userKey=" + userKey);
 
 	//invisible user key input - get from local storage and set
 	var userKeyInput = $(document.createElement('input'));

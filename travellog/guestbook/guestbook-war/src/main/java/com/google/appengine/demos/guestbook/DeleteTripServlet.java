@@ -33,10 +33,18 @@ public class DeleteTripServlet extends HttpServlet {
 			throws IOException, ServletException {
 		String tripKey = req.getParameter("tripKey");
 		String userKey = req.getParameter("userKey");
+		String frommap = req.getParameter("frommap");
 		DatastoreService datastore = DatastoreServiceFactory
 				.getDatastoreService();
 		datastore.delete(KeyFactory.stringToKey(tripKey));
-		resp.sendRedirect("/homepage.jsp?userKey="
+		if(frommap=="True"){
+			System.out.println("frommap "+frommap);	
+			resp.sendRedirect("/MapHome.html?userKey="
 				+ userKey);
+		}else{
+			resp.sendRedirect("/homepage.jsp?userKey="
+				+ userKey);	
+		}
+		
 	}
 }

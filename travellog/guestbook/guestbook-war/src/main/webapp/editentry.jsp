@@ -104,8 +104,8 @@ pageContext.setAttribute("entryDateCreated",
         </div>
         <div id="stripnavbar" class="navbar-default navbar">
           <ul class="nav nav-pills">
-            <li class="active"><a href="#" id="trips_button">Trips</a></li>
-            <li><a href="#">Locations</a></li>
+            <li><a href="#" id="trips_button">Back to Trips</a></li>
+            <li><a href="/entryPage.jsp?entryKey=${fn:escapeXml(entryKey)}" id="back2entry_button">Back to entry</a></li>
           </ul>
         </div>
       </div><!--/.nav-collapse -->
