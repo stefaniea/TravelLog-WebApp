@@ -47,6 +47,8 @@ public class EditTripServlet extends HttpServlet {
 		String location = req.getParameter("location");
 		String depDate = req.getParameter("departDate");
 		String retDate = req.getParameter("retDate");
+		String latitude = req.getParameter("latitude");
+		String longitude = req.getParameter("longitude");
 		// if (depDate == null) depDate = new Date().toString();
 		// if(retDate == null) retDate = new Date().toString();
 		Date date = new Date();
@@ -94,6 +96,8 @@ public class EditTripServlet extends HttpServlet {
 			trip.setProperty("viewer", viewers);
 			trip.setProperty("posters", posters);
 			trip.setProperty("tags", tags);
+			trip.setProperty("latitude", latitude);
+			trip.setProperty("longitude", longitude);
 			datastore.put(trip);
 			System.out.println("updated trip");
 		} catch (EntityNotFoundException e) {

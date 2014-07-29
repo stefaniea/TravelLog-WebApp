@@ -1,4 +1,11 @@
 entryPage= (function(){
+      //don't submit on enter:
+     $(window).keydown(function(event){
+    if( (event.keyCode == 13) ) {
+      event.preventDefault();
+      return false;
+    }
+  });
 	"use strict";
 
 	var body = $(document.getElementById("body"));

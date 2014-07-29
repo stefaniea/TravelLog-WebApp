@@ -24,7 +24,8 @@ MapHome = (function(){
   contentDiv.append(titleDiv);
 
   var title = $(document.createElement('h1'));
-  title.text("Temp trip title")
+  //title.text("Temp trip title")
+   //title.text(trip.title);
   //TODO: uncomment this when we can get the title
   // var title = $(document.getElementById('tripTitle'));
   title.addClass('font-effect-fragile');
@@ -39,7 +40,19 @@ MapHome = (function(){
   //TODO: uncomment this when we can get the date
   // var date=$(document.getElementById('tripDate'));
   var date=$(document.createElement('h2'));
-  date.text("this is testing");
+  //date.text("this is testing");
+     var trip = Util.getTrip(tripKey, userKey);
+   var interval = setInterval(function(){
+       if (trip != undefined){
+        console.log("trip in getTrip function after json interval in mapentry is" + trip.title);
+        clearInterval(interval);
+        title.text(trip.title);
+       date.text(trip.depDate + " - " + trip.retDate);
+       if(trip.depDate == null || trip.retDate == null || trip.depDate == "" || trip.retDate == "") {
+      date.text("");
+  }
+       }
+    }, 200);
   title.append(date);
 
   var location=$(document.createElement('small'));
@@ -233,8 +246,9 @@ function that initialize the map in the page
           entrykey: data.entries[i].key, //???this is coming as undefined...
           index: i,
           photos: photos,
-          lat: 0,
-          lon: 0,
+          lat: data.entries[i].latitude,
+          lon: data.entries[i].longitude,
+          img: "http://imx.solid-run.com/wiki/images/7/75/No_image_available.png"
         };
         console.log("entryobj json title"+entry_obj.title);
         console.log("entryobj json key"+entry_obj.entryKey);
@@ -252,6 +266,9 @@ function that initialize the map in the page
     for (var i = 0; i < entries.length; i++) {
     if(type == "entry") { /* anything special for entries? */ }
     if(type == "trip") { /* anything special for entries? */ }
+    if(locations[i].lat === " " || locations[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
+    if(locations[i].lat == null || locations[i].lon == null) continue; 
+    if(locations[i].location == null || locations[i].location === "") continue;
       var myLatLng = new google.maps.LatLng(entries[i].lat, entries[i].lon);
     var marker = new google.maps.Marker({
       position: myLatLng,
@@ -280,6 +297,11 @@ function that initialize the map in the page
         $(document.getElementById(id)).modal({show:true});
       }
     var id = spec.title+spec.location;
+
+ var endSnippetIndex = Math.min(500, spec.description.length);
+  var description_snippet = (spec.description);
+ /* var description_snippet = description_snippet.substring(0, endSnippetIndex);
+  description_snippet+="...";*/
     var contentString = '<link rel="stylesheet" type="text/css" href="./3DHoverEffects/css/style1.css" />'+
             '<script type="text/javascript" src="./3DHoverEffects/js/modernizr.custom.69142.js"></script>' +
     ' <script src="js/util/bootstrap/js/bootstrap.min.js"></script>'+
@@ -296,7 +318,7 @@ function that initialize the map in the page
        '<img src='+ spec.img + ' style="width: 338"/>'+
         '</div>'+
         '</div>'+ //end of grid
-                   '<p>' + spec.description + '</p>'
+                   '<p>' + description_snippet + '</p>'
 
         var infowindow = new google.maps.InfoWindow({
          content: contentString
@@ -318,30 +340,6 @@ function that initialize the map in the page
               }
             }
           }); 
-      //infowindow.setContent(contentString);
-      // $(document.getElementById("editBtn"+spec.title+spec.location)).click(function(){
-         //       //open a modal to edit info about the photo
-         //       modal.modal({show:true});
-         //   });
-
-    //uncomment this for thumbnail stuff:
-    /*var img = $(document.getElementById(spec.img));
-    img.onload;
-    var imgH=img.height();
-    var imgW=img.width();
-    console.log("img height is"+imgH);
-    var thumbW,thumbH;
-    if(imgW/imgH>1){
-      thumbW=300;
-      thumbH = thumbW*imgH/imgW;
-    }else{
-      thumbH=255;
-      thumbW = thumbH*imgW/imgH;
-    }
-    img.css({
-      'height':thumbW+'px',
-      'width':thumbH+'px',
-    });*/
     infowindow.open(map,marker);
 
     });

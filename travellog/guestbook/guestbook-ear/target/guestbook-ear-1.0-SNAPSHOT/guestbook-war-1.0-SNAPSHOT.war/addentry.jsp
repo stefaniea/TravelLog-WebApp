@@ -57,13 +57,13 @@
         <div id="stripnavbar" class="navbar-default navbar">
           <ul class="nav nav-pills">
             <li class="active"><a href="#" id="trips_button">Trips</a></li>
-            <li><a href="#">Locations</a></li>
+            <li><a href="#" id="entriesmap_button">Entries in Map</a></li>
           </ul>
         </div>
       </div><!--/.nav-collapse -->
       <div id="main" class="container-fluid">
         <form id="addEntry" action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
-        <input type="file" id="fileElem" class="multi" accept="gif|jpg" name="fileUpload" > <!--add multiple="" to have multiple at once, add accept="image/*" if this isn't working-->
+        <input type="file" id="fileElem" class="multi" accept="gif|jpg|jpeg|png" name="fileUpload" > <!--add multiple="" to have multiple at once, add accept="image/*" if this isn't working-->
         </form>
         <!-- hidden file selector for customized button -->
        <!-- <input type="file" id="fileElem" multiple accept="image/*" style="display:none" > testing something, not sure if should comment out or not-->

@@ -1,5 +1,13 @@
 addEntry = (function(){
 
+  //don't submit on enter:
+     $(window).keydown(function(event){
+    if( (event.keyCode == 13) ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+
 	"use strict";
 	var body = $(document.getElementById("body"));
 	var main = $(document.getElementById("main"));
@@ -26,8 +34,7 @@ addEntry = (function(){
     if(userKey != null) {
         console.log("user key was not null, setting param")
     }
-    var tripbutton = $(document.getElementById("trips_button"));
-    tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+
 
 	//invisible user key input - get from local storage and set
 	var userKeyInput = $(document.createElement('input'));
@@ -46,6 +53,13 @@ addEntry = (function(){
 	tripKeyInput.attr("value", tripKey);
 	tripKeyInput.attr("name","tripKey")
 	contentDiv.append(tripKeyInput);
+
+	//link buttons
+	var tripbutton = $(document.getElementById("trips_button"));
+    tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+    var entriesbutton = $(document.getElementById("entriesmap_button"));
+    entriesbutton.attr("href", "/MapHome.html?tripKey=" + tripKey);
+
 	//location input
     var where = Util.inputGroup('Where: ',"location","Enter a location",null,4,false);
 	contentDiv.append(where);

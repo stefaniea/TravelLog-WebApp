@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -89,10 +90,13 @@ public class GetEntriesFromTripServlet extends HttpServlet {
 				entryjson.put("location", (String) entry.getProperty("location"));
 				entryjson.put("tags", (String) entry.getProperty("tags"));
 				entryjson.put("tripKey", tripKeyString);
+				entryjson.put("latitude", (String) entry.getProperty("latitude"));
+				entryjson.put("longitude", (String) entry.getProperty("longitude"));
 				
 				//photos
 				List<String> entryphotos = (List<String>) entry.getProperty("photos");
 				photos = new JSONArray();
+				if(entryphotos == null) entryphotos = new ArrayList<String>();
 				for(int i = 0; i < entryphotos.size(); i++) {
 					Entity photoEntity = datastore.get(KeyFactory.stringToKey(entryphotos.get(i)));
 					photo = new JSONObject();

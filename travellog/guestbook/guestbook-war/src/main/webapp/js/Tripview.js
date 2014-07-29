@@ -1,4 +1,13 @@
 Tripview = (function(){
+
+  //don't submit on enter:
+     $(window).keydown(function(event){
+    if( (event.keyCode == 13) ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+
 	//if there is a user key stored, get it and set as parameter
 	// console.log("about to get user key");
     var userKey = Util.getQueryVariable("userKey");
@@ -179,7 +188,6 @@ Tripview = (function(){
        console.log("size of photos in this entry is"+entry_obj.photos.length);
        entries.push(entry_obj);
        allEntries.append(makePost(entry_obj.title, entry_obj.description, entry_obj.photos, data.entries[i].key));
-      // tripGrid.append(tripPreview(trip_obj));
    }
    console.log("size of entries is:" + entries.length);
 

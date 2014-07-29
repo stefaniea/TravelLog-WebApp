@@ -37,7 +37,7 @@ public class DeleteTripServlet extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory
 				.getDatastoreService();
 		datastore.delete(KeyFactory.stringToKey(tripKey));
-		if(frommap=="True"){
+		if(frommap != null && frommap.equals("True")){
 			System.out.println("frommap "+frommap);	
 			resp.sendRedirect("/MapHome.html?userKey="
 				+ userKey);

@@ -56,10 +56,13 @@ public class EditEntryServlet extends HttpServlet {
 		String title = req.getParameter("title");
 		String description = req.getParameter("description");
 		String location = req.getParameter("location");
+		String latitude = req.getParameter("latitude");
+		String longitude = req.getParameter("longitude");
 		Date date = new Date();
 		String tags = req.getParameter("tags");
 		System.out.println("title is:" + title);
 		System.out.println("tags is:" + tags);
+
 		System.out.println("description is:" + description);
 
 		// create trip entitiy - TODO: also make sure these are correct and
@@ -73,6 +76,10 @@ public class EditEntryServlet extends HttpServlet {
 			entry.setProperty("dateCreated", date);
 			entry.setProperty("location", location);
 			entry.setProperty("tags", tags);
+			if ((latitude != null && longitude != null) && (latitude != "" && longitude != "")) {
+				entry.setProperty("latitude", latitude);
+				entry.setProperty("longitude", longitude);
+			}
 			// poster trip and poster user won't change
 
 			datastore.put(entry);

@@ -93,7 +93,7 @@
       <div id="stripnavbar" class="navbar-default navbar">
         <ul class="nav nav-pills">
           <li class="active"><a href="/homepage.jsp?userKey=${fn:escapeXml(entryPoster)}">Home</a></li>
-          <li><a href="#">Locations</a></li>
+          <li><a href="/MapEntries.html?tripKey=${fn:escapeXml(entryTripPoster)}">Locations</a></li>
         </ul>
       </div>
     </div><!--/.nav-collapse -->

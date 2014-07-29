@@ -35,6 +35,8 @@ public class Upload extends HttpServlet {
 		String description = req.getParameter("description");
 		String tags = req.getParameter("tags");
 		String location = req.getParameter("location");
+		String latitude = req.getParameter("latitude");
+		String longitude = req.getParameter("longitude");
 		Key entryKey = KeyFactory
 				.createKey("Entry", System.currentTimeMillis());
 		String poster = req.getParameter("userKey"); // user that posted the
@@ -102,6 +104,8 @@ public class Upload extends HttpServlet {
 		entry.setProperty("dateCreated", date);
 		entry.setProperty("tripPoster", posterTrip); // string
 		entry.setProperty("photos", photos); // list of photo entity key strings
+		entry.setProperty("latitude", latitude);
+		entry.setProperty("longitude", longitude);
 		// entry.setProperty("videoKey", value); TODO: videos
 
 		datastore.put(entry);

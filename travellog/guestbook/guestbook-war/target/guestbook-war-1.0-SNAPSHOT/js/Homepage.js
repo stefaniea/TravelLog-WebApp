@@ -1,4 +1,13 @@
 Homepage = (function(){
+
+  //don't submit on enter:
+     $(window).keydown(function(event){
+    if( (event.keyCode == 13) ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+     
     //if there is a user key stored, get it and set as parameter for link
     // console.log("about to get user key");
     "use strict";

@@ -82,6 +82,8 @@ public class GetEntryFromKeyServlet extends HttpServlet {
 		entryjson.put("key", (String) KeyFactory.keyToString(entry.getKey()));
 		entryjson.put("location", (String) entry.getProperty("location"));
 		entryjson.put("tags", (String) entry.getProperty("tags"));
+		entryjson.put("latitude", (String) entry.getProperty("latitude"));
+		entryjson.put("longitude", (String) entry.getProperty("longitude"));
 
 		// photos
 		List<String> entryphotos = (List<String>) entry.getProperty("photos");

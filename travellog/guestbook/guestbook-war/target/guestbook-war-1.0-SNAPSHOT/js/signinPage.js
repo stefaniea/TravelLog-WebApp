@@ -1,4 +1,11 @@
 signinPage=(function(){
+	    //don't submit on enter:
+     $(window).keydown(function(event){
+    if( (event.keyCode == 13) && (validationFunction() == false) ) {
+      event.preventDefault();
+      return false;
+    }
+  });
 	//var root;
 	var overlay = $(document.getElementById("body"));//root.find("div");
 	/*-----initial the navigation bar---------*/

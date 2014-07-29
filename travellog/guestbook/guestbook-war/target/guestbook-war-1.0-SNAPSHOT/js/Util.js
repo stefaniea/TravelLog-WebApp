@@ -22,6 +22,8 @@ Util = (function(){
         uploadPhotos:uploadPhotos,
         getQueryVariable: getQueryVariable,
         getFromLocalStorage : getFromLocalStorage,
+        getTrip : getTrip,
+        getEntry : getEntry,
     };
 
     /***
@@ -361,8 +363,8 @@ Util = (function(){
                 latitude.css("display", "none");
                 latitude.attr("name", "latitude");
                 latitude.attr("value", "");//initialize lat/long as empty:
-                longitude.attr("value", " ");
-                longitude.innerHTML = " ";
+                longitude.attr("value", "");
+                longitude.innerHTML = "";
                 wrapper.append(latitude);
                 wrapper.append(longitude);
                   google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -380,8 +382,9 @@ Util = (function(){
         return wrapper;
     }
 
-    function getTrip(tripKey) {
-        var trip = $.getJSON('getTrip?tripKey='+userKey, function(data) {
+    function getTrip(tripKey, useKey) {
+        var trip;
+         $.getJSON('getTrip?tripKey='+tripKey, function(data) {
             var src = "/getTripImage?tripKey=" + tripKey
             console.log("trip json title"+data.trip.title);
             console.log("trip json key"+data.trip.key);
@@ -396,17 +399,24 @@ Util = (function(){
                 retDate: data.trip.returnDate,
                 tags: data.trip.tags,
                 img:src,
-                //lat: parseFloat(data.trip.latitude),  //TODO!!
-                //lon: parseFloat(data.trip.longitude),
+                lat: parseFloat(data.trip.latitude),  //TODO??
+                lon: parseFloat(data.trip.longitude),
             };
-            return trip_obj;
+            trip = trip_obj;
+            console.log("trip in getTrip function is "+trip_obj.title );
         //}
         });
-        return trip;
+        var interval = setInterval(function(){
+       if (trip != undefined){
+        console.log("trip in getTrip function after json interval is " + trip.title);
+         clearInterval(interval);
+         return trip;
+       }
+    }, 200);
     }
 
-    function getEntry(entryKey) {
-        var entry = $.getJSON('getEntry?entryKey='+userKey, function(data) {
+    function getEntry(entryKey, tripKey) {
+        var entry = $.getJSON('getEntry?entryKey='+entryKey, function(data) {
 
         var entry_obj = {
             title: data.entry.title,
@@ -415,8 +425,8 @@ Util = (function(){
             tripkey: data.entry.tripKey,
             entrykey: data.entry.key,
             tags: data.entry.tags,
-            //lat: parseFloat(data.entry.latitude),  //TODO!!
-            //lon: parseFloat(data.entry.longitude),
+            lat: parseFloat(data.entry.latitude),  //TODO!!??
+            lon: parseFloat(data.entry.longitude),
          };
          return entry_obj;
 
@@ -503,8 +513,17 @@ Util = (function(){
     function carouselItem(isActive,img, isEntryPage){
         var item = $(document.createElement('div'));
         item.addClass('item');
-        var thumb = $(img);
+      var thumb;
+      if(isEntryPage) {
+        thumb = $(img);
         item.attr('title',thumb.attr('title'));
+    }
+     else {   
+        thumb = $(document.createElement("img"));
+            thumb.attr("src", img.link);
+            thumb.attr("title", img.title);
+        }
+
         thumb.css({
             'width':'100%',
             'height':'auto',

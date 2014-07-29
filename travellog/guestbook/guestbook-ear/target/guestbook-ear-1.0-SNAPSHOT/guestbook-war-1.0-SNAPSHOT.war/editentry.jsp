@@ -104,14 +104,14 @@ pageContext.setAttribute("entryDateCreated",
         </div>
         <div id="stripnavbar" class="navbar-default navbar">
           <ul class="nav nav-pills">
-            <li class="active"><a href="#" id="trips_button">Trips</a></li>
-            <li><a href="#">Locations</a></li>
+            <li><a href="#" id="trips_button">Back to Trips</a></li>
+            <li><a href="/entryPage.jsp?entryKey=${fn:escapeXml(entryKey)}" id="back2entry_button">Back to entry</a></li>
           </ul>
         </div>
       </div><!--/.nav-collapse -->
       <div id="main" class="container-fluid">
         <form id="editEntry" action="<%= blobstoreService.createUploadUrl("/editEntry") %>" method="post" enctype="multipart/form-data">
-          <input type="file" id="fileElem" class="multi" accept="gif|jpg" name="fileUpload" > <!--add multiple="" to have multiple at once, add accept="image/*" if this isn't working-->
+          <input type="file" id="fileElem" class="multi" accept="gif|jpg|jpeg|png" name="fileUpload" > <!--add multiple="" to have multiple at once, add accept="image/*" if this isn't working-->
           <input name="entryKey" value="${fn:escapeXml(entryKey)}" style="display:none"></input>
         </form>
         <!-- hidden file selector for customized button -->
