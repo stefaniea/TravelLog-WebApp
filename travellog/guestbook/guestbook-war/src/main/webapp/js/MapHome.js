@@ -255,33 +255,48 @@ function deleteMarkers() {
   markers = [];
 }
 
+//TODO: fix css of this?? It looks like bootstrap isn't really working hmm
 function addTripSearchResults(tripResults) {
   console.log("trip results size is" + tripResults);
   //clear previous results div
   $("#results").remove();
   var resultsDiv = $(document.createElement("div"));
   resultsDiv.attr("id", "results");
+  resultsDiv.attr("class", "list-group");
   for(var i = 0; i < tripResults.length; i++) {
-    var panelOuter = $(document.createElement("div"));
-    panelOuter.attr("class", "panel panel-default");
-    var panelHeading = $(document.createElement("div"));
-    panelHeading.attr("class", "panel-heading");
-    panelHeading.innerHTML = tripResults[i].title;
-    var panelInner = $(document.createElement("div"));
-    panelInner.attr("class", "panel-body");
-    panelInner.innerHTML = tripResults.description;
+    var link = $(document.createElement("a"));
+    link.attr("href", tripResults[i].link);
+    link.css("padding" : "10px");
+    link.css("min-height": "20px");
+    var heading = $(document.createElement("h4"));
+    heading.attr("class", "list-group-item-heading");
+    //Why are neither of these working: ???
+    heading.text(tripResults[i].title);
+    var text= $(document.createElement("p"));
+    text.attr("class", "list-group-item-text");
+
+    //Why are none of these working???:
+    text.text(tripResults[i].description);
     //TODO: image thumbnail and view button
+    
     var thumb = $(document.createElement("img"));
     thumb.attr("src", tripResults[i].img);
     thumb.css({
-      "width" : 50px;
+      "width" : "70px",
+      "height" : "auto", 
+      "float" : "right"
     });
-    panelInner.append(thumb);
-    panelOuter.append(panelHeading);
+   text.append(thumb); //TODO
+   link.append(heading);
+   link.append(text);
+   resultsDiv.append(link);
+    /*panelOuter.append(panelHeading);
     panelOuter.append(panelInner);
     resultsDiv.append(panelOuter);
-    console.log("add trips to results: "+tripResults[i].title);
+    panelOuter.css("height" : "75px");
+    console.log("add trips to results: "+tripResults[i].title);*/
   }
+  resultsDiv.addClass('row col-md-10 col-md-offset-1');
   contentDiv.append(resultsDiv);
 }
 
