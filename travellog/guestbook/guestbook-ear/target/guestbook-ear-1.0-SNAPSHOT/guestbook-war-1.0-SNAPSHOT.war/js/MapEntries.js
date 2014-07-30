@@ -266,9 +266,9 @@ function that initialize the map in the page
     for (var i = 0; i < entries.length; i++) {
     if(type == "entry") { /* anything special for entries? */ }
     if(type == "trip") { /* anything special for entries? */ }
-    if(locations[i].lat === " " || locations[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
-    if(locations[i].lat == null || locations[i].lon == null) continue; 
-    if(locations[i].location == null || locations[i].location === "") continue;
+    if(entries[i].lat === " " || entries[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
+    if(entries[i].lat == null || entries[i].lon == null) continue; 
+    if(entries[i].location == null || entries[i].location === "") continue;
       var myLatLng = new google.maps.LatLng(entries[i].lat, entries[i].lon);
     var marker = new google.maps.Marker({
       position: myLatLng,

@@ -45,16 +45,22 @@ MapHome = (function(){
  $mapCanvas.attr("id", "map-canvas");
  $mapCanvas.css({
  	'height':'500px',
+  'margin-bottom':'20px'
  })
  contentDiv.append($mapCanvas);
  var userKey = Util.getQueryVariable("userKey");
-    if(userKey != null) {
-        // console.log("user key was not null, setting param")
-        var tripbutton = $(document.getElementById("trips_button"));
-        tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
-        var mapbutton = $(document.getElementById("maps_button"));
-        mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
-    }
+  if(userKey != null) {
+      // console.log("user key was not null, setting param")
+      var tripbutton = $(document.getElementById("trips_button"));
+      tripbutton.attr("href", "/homepage.jsp?userKey=" + userKey);
+      var mapbutton = $(document.getElementById("maps_button"));
+      mapbutton.attr("href", "/MapHome.html?userKey=" + userKey);
+  }
+  var tripTitles=[],
+      tripPlaces=[];
+
+
+
   /*
 function that initialize the map in the page
 */
@@ -75,137 +81,174 @@ function that initialize the map in the page
 
     var searchBox = new google.maps.places.SearchBox((input));
       // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
-  google.maps.event.addListener(searchBox, 'places_changed', function() {
-    var places = searchBox.getPlaces();
+    // pick list. Retrieve the matching places for that item.
+    google.maps.event.addListener(searchBox, 'places_changed', function() {
+      var places = searchBox.getPlaces();
 
-    if (places.length == 0) {
-      return;
-    }
-   /*for (var i = 0, marker; marker = markers[i]; i++) {
-      marker.setMap(null);
-    }*/
+      if (places.length == 0) {
+        return;
+      }
+     /*for (var i = 0, marker; marker = markers[i]; i++) {
+        marker.setMap(null);
+      }*/
 
-    // For each place, get the icon, place name, and location.
-    markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0, place; place = places[i]; i++) {
-        var location = {
-        lat: place.geometry.location.latitude,
-        lon: place.geometry.location.longitude,
-        title: place.name,
-        description: "",
-        link: "#",
-        depDate: "start",
-        retDate: "end",
-        tags: "",
-        img: "images/stamp.png",
-        location: place.name,
-        index: i,
-        tripKey: "",
-        userKey: userKey,
-      };
-     
-      var image = {
-        url: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpin.png",
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(40, 40),
-        shadow: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpins.png"
-      };
+      // For each place, get the icon, place name, and location.
+      markers = [];
+      var bounds = new google.maps.LatLngBounds();
+      for (var i = 0, place; place = places[i]; i++) {
+          var location = {
+          lat: place.geometry.location.latitude,
+          lon: place.geometry.location.longitude,
+          title: place.name,
+          description: "",
+          link: "#",
+          depDate: "start",
+          retDate: "end",
+          tags: "",
+          img: "images/stamp.png",
+          location: place.name,
+          index: i,
+          tripKey: "",
+          userKey: userKey,
+        };
+       
+        var image = {
+          url: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpin.png",
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(40, 40),
+          shadow: "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpins.png"
+        };
 
-      // Create a marker for each place.
-      var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location,
-        animation: google.maps.Animation.DROP,
+        // Create a marker for each place.
+        var marker = new google.maps.Marker({
+          map: map,
+          icon: image,
+          title: place.name,
+          position: place.geometry.location,
+          animation: google.maps.Animation.DROP,
+        });
+
+        markers.push(marker);
+        setNewTripInfoWindow(map, marker, location);
+
+        bounds.extend(place.geometry.location);
+      }
+
+      map.fitBounds(bounds);
+    });
+
+    // Bias the SearchBox results towards places that are within the bounds of the
+    // current map's viewport.
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+      var bounds = map.getBounds();
+      searchBox.setBounds(bounds);
+    });
+    var trips = [];
+	  $.getJSON('getTrips?userKey='+userKey, function(data) {
+      var i = 0;
+      for (var i =0; i < data.trips.length; i++) {
+        var link = "/MapEntries.html?tripKey=" + data.trips[i].key;
+        var src = "/getTripImage?tripKey=" + data.trips[i].key;
+        console.log("trip json title"+data.trips[i].title);
+        console.log("trip json key"+data.trips[i].key);
+
+        //TODO - get from json or location
+       //var location = getLatandLngFromInput(data.trips[i].location); //this is wrong
+       tripTitles.push(data.trips[i].title);
+       tripPlaces.push(data.trips[i].location);
+       var trip_obj = {
+          title: data.trips[i].title,
+          description: data.trips[i].description,
+          location: data.trips[i].location,
+          tripkey: data.trips[i].key,
+          userkey: data.trips[i].userKey,
+          depDate: data.trips[i].departDate,
+          retDate: data.trips[i].returnDate,
+          tags: data.trips[i].tags,
+          index: i,
+          link: link,
+          img:src,
+          lat: parseFloat(data.trips[i].latitude),
+          lon: parseFloat(data.trips[i].longitude),
+        };
+
+        trips.push(trip_obj);
+      }
+      loadTrips(map, trips);
+      createSearchBar();
+    });
+
+    function createSearchBar(){
+      /**HERE IS THE SEARCH BAR~~**/
+      var searchForm = $(document.createElement('form'));
+      searchForm.attr('role','search');
+      searchForm.addClass('row col-md-10 col-md-offset-1')
+      var searchdiv = $(document.createElement('div'));
+      searchdiv.addClass('form-group col-md-4');
+      var searchInput=$(document.createElement('input'));
+      searchInput.attr({
+        'id':'searchInput',
+        'type':'text',
+        'placeholder':'Search by Title/Place',
       });
+      searchInput.addClass('form-control col-md-4');
+      var searchbtn = $(document.createElement('button'));
+      searchbtn.addClass("btn btn-default");
+      searchbtn.attr('type','submit');
+      searchbtn.text("Search");
+      searchdiv.append(searchInput);
+      searchForm.append(searchdiv).append(searchbtn);
+      contentDiv.append(searchForm);
+      $("#searchInput").autocomplete({
+        source:tripTitles.concat(tripPlaces)
+      });
+      $(".ui-autocomplete").attr({
+        'z-index':10000000000,
+        'display':'block'
+      })
+      //TODO: show up the match pins on map:
+      searchbtn.click(function(){
 
-      markers.push(marker);
-      setNewTripInfoWindow(map, marker, location);
-
-      bounds.extend(place.geometry.location);
+      });
     }
-
-    map.fitBounds(bounds);
-  });
-
-  // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
-  google.maps.event.addListener(map, 'bounds_changed', function() {
-    var bounds = map.getBounds();
-    searchBox.setBounds(bounds);
-  });
-		
-    loadTrips(map, userKey);
    //loadTripsEx(map);
-}
+  }
 
 
-google.maps.event.addDomListener(window, "load", initialize);
+  google.maps.event.addDomListener(window, "load", initialize);
 
-//makes one trip at 0, 0
-function loadTripsEx(map) {
-	var trips = [];
-	var trip_obj = {
-		title: "trip title",
-		description: "description bla bla bla bla asdfkjasdfkjhasdf",
-		location: "new york",
-		tripkey: "na",
-		userkey: "na",
-		depDate: "now",
-		retDate: "later",
-		tags: "great",
-		index: 0,
-		link: "google.com",
-		img: "images/4.jpg",
-		lat: 0,
-		lon: 0
-	};
+  
+// //makes one trip at 0, 0
+// function loadTripsEx(map) {
+// 	var trips = [];
+// 	var trip_obj = {
+// 		title: "trip title",
+// 		description: "description bla bla bla bla asdfkjasdfkjhasdf",
+// 		location: "new york",
+// 		tripkey: "na",
+// 		userkey: "na",
+// 		depDate: "now",
+// 		retDate: "later",
+// 		tags: "great",
+// 		index: 0,
+// 		link: "google.com",
+// 		img: "images/4.jpg",
+// 		lat: 0,
+// 		lon: 0
+// 	};
 
-	trips.push(trip_obj);
-	setMarkers(map, trips, "trips");
+// 	trips.push(trip_obj);
+// 	setMarkers(map, trips, "trips");
 
-}
+// }
 
-function loadTrips(map, userKey) {
-	$.getJSON('getTrips?userKey='+userKey, function(data) {
-		var trips = [];
-		var i = 0;
-		for (var i =0; i < data.trips.length; i++) {
-			var link = "/MapEntries.html?tripKey=" + data.trips[i].key;
-			var src = "/getTripImage?tripKey=" + data.trips[i].key;
-			console.log("trip json title"+data.trips[i].title);
-			console.log("trip json key"+data.trips[i].key);
+function loadTrips(map, trips) {
 
-      //TODO - get from json or location
-     //var location = getLatandLngFromInput(data.trips[i].location); //this is wrong
-
-     var trip_obj = {
-     	title: data.trips[i].title,
-     	description: data.trips[i].description,
-     	location: data.trips[i].location,
-     	tripkey: data.trips[i].key,
-     	userkey: data.trips[i].userKey,
-     	depDate: data.trips[i].departDate,
-     	retDate: data.trips[i].returnDate,
-     	tags: data.trips[i].tags,
-     	index: i,
-     	link: link,
-     	img:src,
-     	lat: parseFloat(data.trips[i].latitude),
-     	lon: parseFloat(data.trips[i].longitude),
-     };
-
-     trips.push(trip_obj);
- }
- console.log("get trips about to set markers");
- setMarkers(map, trips, "trips");
- console.log("set markers");
-});
+   console.log("get trips about to set markers");
+   setMarkers(map, trips, "trips");
+   console.log("set markers");
 }
 
 function getLatandLngFromInput(input){
