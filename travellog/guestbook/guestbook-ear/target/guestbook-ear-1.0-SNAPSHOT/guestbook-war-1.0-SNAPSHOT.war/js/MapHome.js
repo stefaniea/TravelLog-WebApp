@@ -1,5 +1,5 @@
 MapHome = (function(){
-  
+  var markers;
       //don't submit on enter:
      $(window).keydown(function(event){
     if( (event.keyCode == 13) && (validationFunction() == false) ) {
@@ -75,7 +75,7 @@ function that initialize the map in the page
 			myOptions);
 		//setMarkers(map, beaches);
     // Create the search box and link it to the UI element.
-     var markers = [];
+     markers = [];
     var input = (document.getElementById('pac-input'));
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -146,6 +146,8 @@ function that initialize the map in the page
       searchBox.setBounds(bounds);
     });
     var trips = [];
+    var tripTitles = [];
+    var tripPlaces = [];
 	  $.getJSON('getTrips?userKey='+userKey, function(data) {
       var i = 0;
       for (var i =0; i < data.trips.length; i++) {
@@ -169,7 +171,7 @@ function that initialize the map in the page
           tags: data.trips[i].tags,
           index: i,
           link: link,
-          img:src,
+          img: src,
           lat: parseFloat(data.trips[i].latitude),
           lon: parseFloat(data.trips[i].longitude),
         };
@@ -179,6 +181,13 @@ function that initialize the map in the page
       loadTrips(map, trips);
       createSearchBar();
     });
+
+  var interval = setInterval(function(){
+   if (trips != undefined && tripTitles != undefined && tripPlaces != undefined){
+     console.log("not undefined yay");
+     clearInterval(interval);
+   }
+    }, 200);
 
     function createSearchBar(){
       /**HERE IS THE SEARCH BAR~~**/
@@ -194,6 +203,7 @@ function that initialize the map in the page
         'placeholder':'Search by Title/Place',
       });
       searchInput.addClass('form-control col-md-4');
+      searchInput.attr("autocomplete", "on");
       var searchbtn = $(document.createElement('button'));
       searchbtn.addClass("btn btn-default");
       searchbtn.attr('type','submit');
@@ -209,11 +219,89 @@ function that initialize the map in the page
         'display':'block'
       })
       //TODO: show up the match pins on map:
-      searchbtn.click(function(){
-
+      searchbtn.click(function(e){
+        e.preventDefault();
+        var searchString = searchInput.val();
+        var results = searchTrips(tripPlaces, tripTitles, trips, searchString);
+        addTripSearchResults(results);
+        console.log("added search results");
+        setMarkers(map, results, "trips");
+        
       });
     }
    //loadTripsEx(map);
+  }
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+  setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}
+
+function addTripSearchResults(tripResults) {
+  console.log("trip results size is" + tripResults);
+  //clear previous results div
+  $("#results").remove();
+  var resultsDiv = $(document.createElement("div"));
+  resultsDiv.attr("id", "results");
+  for(var i = 0; i < tripResults.length; i++) {
+    var panelOuter = $(document.createElement("div"));
+    panelOuter.attr("class", "panel panel-default");
+    var panelHeading = $(document.createElement("div"));
+    panelHeading.attr("class", "panel-heading");
+    panelHeading.innerHTML = tripResults[i].title;
+    var panelInner = $(document.createElement("div"));
+    panelInner.attr("class", "panel-body");
+    panelInner.innerHTML = tripResults.description;
+    //TODO: image thumbnail and view button
+    var thumb = $(document.createElement("img"));
+    thumb.attr("src", tripResults[i].img);
+    panelInner.append(thumb);
+    panelOuter.append(panelHeading);
+    panelOuter.append(panelInner);
+    resultsDiv.append(panelOuter);
+    console.log("add trips to results: "+tripResults[i].title);
+  }
+  contentDiv.append(resultsDiv);
+}
+
+  function searchTrips(tripPlaces, tripTitles, trips, searchString) {
+    var results = []; //will contain all the indices for trips array that match the search string
+    //remove all markers
+    // Deletes all markers in the array by removing references to them.
+    deleteMarkers();
+
+    for(var i = 0; i < trips.length; i++) {
+      //make uppercase (case insensitive)
+      var place = tripPlaces[i].toUpperCase();
+      var title = tripTitles[i].toUpperCase();
+      //check for a match
+      if(place.indexOf(searchString.toUpperCase()) > -1) {
+       results.push(trips[i]);
+     }
+     else if(title.indexOf(searchString.toUpperCase()) > -1) {
+      results.push(trips[i]);
+     }
+    }
+
+    return results
   }
 
 
