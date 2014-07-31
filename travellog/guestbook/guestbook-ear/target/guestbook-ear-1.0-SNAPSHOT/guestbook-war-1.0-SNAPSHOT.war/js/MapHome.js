@@ -219,6 +219,9 @@ function that initialize the map in the page
       searchdiv.append(searchInput);
       searchForm.append(searchdiv).append(searchbtn);
       contentDiv.append(searchForm);
+      searchInput.focus(function(e){
+      e.preventDefault(); //prevent it from scrolling the page (maybe??)
+});
       // $("#searchInput").autocomplete({
       //   source:tripTitles.concat(tripPlaces)
       // });
@@ -290,14 +293,29 @@ function addTripSearchResults(tripResults) {
     link.addClass("col-md-12");
     link.css({
       "padding" : "10px",
-      "min-height":"20px"
+      "min-height":"20px",
+      "background-color" : "white",
+      "border-radius" : "10px",
+      "margin-bottom" : "10px",
     });
+    $('a:hover').css('text-decoration','none');
     var heading = $(document.createElement("h4"));
     heading.attr("class", "list-group-item-heading");
+    var purple = "#504552";
+    heading.css({
+      "background-color" : purple,
+      "padding" : "10px",
+      "height" : "100%",
+      "color" : "white",
+    });
     //Why are neither of these working: ???
     heading.text(tripResults[i].title);
     var text= $(document.createElement("p"));
     text.attr("class", "list-group-item-text");
+    text.css({
+      "padding" : "10px",
+      "color" : purple,
+    });
 
     //Why are none of these working???:
     text.text(tripResults[i].location);
@@ -305,19 +323,14 @@ function addTripSearchResults(tripResults) {
     var thumb = $(document.createElement("img"));
     thumb.attr("src", tripResults[i].img);
     thumb.css({
-      "width" : "70px",
-      "height" : "auto", 
+      "height" : "70px",
+      "width" : "auto", 
       "float" : "right"
     });
    text.append(thumb); //TODO
    link.append(heading);
    link.append(text);
    resultsDiv.append(link);
-    /*panelOuter.append(panelHeading);
-    panelOuter.append(panelInner);
-    resultsDiv.append(panelOuter);
-    panelOuter.css("height" : "75px");
-    console.log("add trips to results: "+tripResults[i].title);*/
   }
   resultsDiv.addClass('row col-md-10 col-md-offset-1');
   contentDiv.append(resultsDiv);

@@ -1,5 +1,6 @@
 MapHome = (function(){
   "use strict";
+  var markers;
   var userKey = Util.getQueryVariable("userKey");
   if(userKey != null) {
     console.log("user key was not null, setting param")
@@ -120,17 +121,20 @@ MapHome = (function(){
  })
  contentDiv.append($mapCanvas);
  var entries=[];
-  var markers = [];
+ markers = [];
+
 
   /*
 function that initialize the map in the page
 */
   function initialize() {
+     markers = [];
     var myOptions = {
       zoom: 10,
       center: new google.maps.LatLng(-34.397, 150.644),
       mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
+    };
+    markers = [];
     var map = new google.maps.Map(
       mapCanvas,
       myOptions);
@@ -257,48 +261,58 @@ function that initialize the map in the page
   google.maps.event.addDomListener(window, "load", initialize);
   function addEntriesSearchResults(entriesresults) {
     // console.log("trip results size is" + tripResults.length);
-    //clear previous results div
-    $("#results").remove();
-    var resultsDiv = $(document.createElement("div"));
-    resultsDiv.attr("id", "results");
-    resultsDiv.attr("class", "list-group");
-    for(var i = 0; i < entriesresults.length; i++) {
-      var link = $(document.createElement("a"));
-      link.attr("href", entriesresults[i].link);
-      link.addClass("col-md-12");
-      link.css({
-        "padding" : "10px",
-        "min-height":"20px"
-      });
-      var heading = $(document.createElement("h4"));
-      heading.attr("class", "list-group-item-heading");
-      //Why are neither of these working: ???
-      heading.text(entriesresults[i].title);
-      var text= $(document.createElement("p"));
-      text.attr("class", "list-group-item-text");
+  //clear previous results div
+  $("#results").remove();
+  var resultsDiv = $(document.createElement("div"));
+  resultsDiv.attr("id", "results");
+  resultsDiv.attr("class", "list-group");
+  for(var i = 0; i < entriesresults.length; i++) {
+    var link = $(document.createElement("a"));
+    link.attr("href", entriesresults[i].link);
+    link.addClass("col-md-12");
+    link.css({
+      "padding" : "10px",
+      "min-height":"20px",
+      "background-color" : "white",
+      "border-radius" : "10px",
+      "margin-bottom" : "10px",
+    });
+    $('a:hover').css('text-decoration','none');
+    var heading = $(document.createElement("h4"));
+    heading.attr("class", "list-group-item-heading");
+    var purple = "#504552";
+    heading.css({
+      "background-color" : purple,
+      "padding" : "10px",
+      "height" : "100%",
+      "color" : "white",
+    });
+    //Why are neither of these working: ???
+    heading.text(entriesresults[i].title);
+    var text= $(document.createElement("p"));
+    text.attr("class", "list-group-item-text");
+    text.css({
+      "padding" : "10px",
+      "color" : purple,
+    });
 
-      //Why are none of these working???:
-      text.text(entriesresults[i].location);
-      //TODO: image thumbnail and view button
-      var thumb = $(document.createElement("img"));
-      thumb.attr("src", entriesresults[i].img);
-      thumb.css({
-        "width" : "70px",
-        "height" : "auto", 
-        "float" : "right"
-      });
-     text.append(thumb); //TODO
-     link.append(heading);
-     link.append(text);
-     resultsDiv.append(link);
-      /*panelOuter.append(panelHeading);
-      panelOuter.append(panelInner);
-      resultsDiv.append(panelOuter);
-      panelOuter.css("height" : "75px");
-      console.log("add trips to results: "+tripResults[i].title);*/
-    }
-    resultsDiv.addClass('row col-md-10 col-md-offset-1');
-    contentDiv.append(resultsDiv);
+    //Why are none of these working???:
+    text.text(entriesresults[i].location);
+    //TODO: image thumbnail and view button
+    var thumb = $(document.createElement("img"));
+    thumb.attr("src", entriesresults[i].img);
+    thumb.css({
+      "height" : "70px",
+      "width" : "auto", 
+      "float" : "right"
+    });
+   text.append(thumb); //TODO
+   link.append(heading);
+   link.append(text);
+   resultsDiv.append(link);
+  }
+  resultsDiv.addClass('row col-md-10 col-md-offset-1');
+  contentDiv.append(resultsDiv);
   }
 
   function searchEntries(entries, searchString) {
@@ -334,54 +348,6 @@ function that initialize the map in the page
     return location;
   }
 
-  // function loadEntries(map,tripkey) {
-  //   $.getJSON('getEntries?tripKey='+tripKey, function(data) {
-  //     var entries = [];
-  //     var i = 0;
-  //     for (var i =0; i < data.entries.length; i++) {
-  //      // var link = "/tripview.jsp?tripKey=" + data.trips[i].key;
-  //      // var src = "/getTripImage?tripKey=" + data.trips[i].key;
-  //      console.log("entry json title"+data.entries[i].title);
-  //      console.log("entry json key"+data.entries[i].key);
-
-  //      var photos = [];
-  //      for(var j = 0; j < data.entries[i].photos.length; j++) {
-  //       var photo = {
-  //         title: data.entries[i].photos[j].title,
-  //         description: data.entries[i].photos[j].description,
-  //         photoKey: data.entries[i].photos[j].key,
-  //         blobKey: data.entries[i].photos[j].blobKey,
-  //         index: j,
-  //         link: "/getImageFromBlobKey?blobKey="+data.entries[i].photos[j].blobKey,
-  //       };
-  //       photos.push(photo);
-  //      }
-
-  //       //var location = getLatandLngFromInput(data.entries[i].location); //TODO make sure there is location for entries
-  //       var entry_obj = {
-  //         title: data.entries[i].title,
-  //         description: data.entries[i].description,
-  //         location: data.entries[i].location,
-  //         link: '/entryPage.jsp?entryKey='+data.entries[i].key,
-
-  //         tripkey: data.entries[i].tripKey,
-  //         entrykey: data.entries[i].key, //???this is coming as undefined...
-  //         index: i,
-  //         photos: photos,
-  //         lat: data.entries[i].latitude,
-  //         lon: data.entries[i].longitude,
-  //         img: "http://imx.solid-run.com/wiki/images/7/75/No_image_available.png"
-  //       };
-  //       console.log("entryobj json title"+entry_obj.title);
-  //       console.log("entryobj json key"+entry_obj.entryKey);
-  //       console.log("size of photos in this entry is"+entry_obj.photos.length);
-  //       entries.push(entry_obj);
-  //   }
-  //   setMarkers(map, entries, "entry");
-  // });
-  // }
-
-
   function setMarkers(map, entries, type) {
     //TODO: custom pins
     markers=[];
@@ -393,12 +359,14 @@ function that initialize the map in the page
     if(entries[i].lat == null || entries[i].lon == null) continue; 
     if(entries[i].location == null || entries[i].location === "") continue;
       var myLatLng = new google.maps.LatLng(entries[i].lat, entries[i].lon);
-    var marker = new google.maps.Marker({
-      position: myLatLng,
-      map: map,
-      title: entries[i].title,
-      zIndex: entries[i].index,
-    });
+     var marker = new google.maps.Marker({
+    position: myLatLng,
+    map: map,
+    icon: {url: "./images/pushpin.png", scaledSize: new google.maps.Size(40, 40) },
+    title: entries[i].title,
+    zIndex: 1,
+    animation: google.maps.Animation.DROP,
+  });
     bounds.extend(myLatLng);
     setInfoWindow(map, marker, entries[i], "google.com");
     }
@@ -407,7 +375,6 @@ function that initialize the map in the page
   }
   // Sets the map on all markers in the array.
   function setAllMap(map) {
-    console.log(markers.length)
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(map);
     }
@@ -491,5 +458,7 @@ function that initialize the map in the page
     });
 
   }
+
+
 
 })();

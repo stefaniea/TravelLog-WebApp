@@ -36,6 +36,7 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Rancho&effect=fragile">
 
+
   <!-- Bootstrap core CHS -->
   <link href="../js/util/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -200,5 +201,6 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script src = "../js/Util.js"></script>
 <script src="../js/Tripview.js"></script>
+  <link href="../css/tripview.css" rel="stylesheet">
 </body>
 </html>
