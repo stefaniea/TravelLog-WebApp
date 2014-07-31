@@ -15,7 +15,10 @@ MapHome = (function(){
 		'width':'100%',
 	})
 	var contentDiv = $(document.getElementById("contentDiv"));
-	contentDiv.css('padding-top','50px');
+	contentDiv.css({
+    'padding-top':'50px',
+    'padding-bottom':'100px'
+  });
 
 	var addbtnDiv = $(document.createElement('div'));
 	addbtnDiv.addClass("col-md-12");
@@ -37,7 +40,9 @@ MapHome = (function(){
 		'background-color':'#00868B',
 	});
    Util.addNewTrip(body);//initial add new trip modal
-
+  // window.onload = function() {
+  //   scrollTo(0,0);
+  // }
  //here goes the map outtermost div
  var mapCanvas = document.createElement('div');
  var $mapCanvas = $(mapCanvas);
@@ -146,8 +151,8 @@ function that initialize the map in the page
       searchBox.setBounds(bounds);
     });
     var trips = [];
-    var tripTitles = [];
-    var tripPlaces = [];
+    // var tripTitles = [];
+    // var tripPlaces = [];
 	  $.getJSON('getTrips?userKey='+userKey, function(data) {
       var i = 0;
       for (var i =0; i < data.trips.length; i++) {
@@ -158,8 +163,8 @@ function that initialize the map in the page
 
         //TODO - get from json or location
        //var location = getLatandLngFromInput(data.trips[i].location); //this is wrong
-       tripTitles.push(data.trips[i].title);
-       tripPlaces.push(data.trips[i].location);
+       // tripTitles.push(data.trips[i].title);
+       // tripPlaces.push(data.trips[i].location);
        var trip_obj = {
           title: data.trips[i].title,
           description: data.trips[i].description,
@@ -178,12 +183,13 @@ function that initialize the map in the page
 
         trips.push(trip_obj);
       }
-      loadTrips(map, trips);
+      setMarkers(map, trips, "trips");
       createSearchBar();
+      addTripSearchResults(trips);
     });
 
   var interval = setInterval(function(){
-   if (trips != undefined && tripTitles != undefined && tripPlaces != undefined){
+   if (trips != undefined){
      console.log("not undefined yay");
      clearInterval(interval);
    }
@@ -193,6 +199,8 @@ function that initialize the map in the page
       /**HERE IS THE SEARCH BAR~~**/
       var searchForm = $(document.createElement('form'));
       searchForm.attr('role','search');
+      searchForm.attr('name','selfsubmit');
+
       searchForm.addClass('row col-md-10 col-md-offset-1')
       var searchdiv = $(document.createElement('div'));
       searchdiv.addClass('form-group col-md-4');
@@ -207,26 +215,39 @@ function that initialize the map in the page
       var searchbtn = $(document.createElement('button'));
       searchbtn.addClass("btn btn-default");
       searchbtn.attr('type','submit');
-      searchbtn.text("Search");
+      searchbtn.text("Show search results on the Map");
       searchdiv.append(searchInput);
       searchForm.append(searchdiv).append(searchbtn);
       contentDiv.append(searchForm);
-      $("#searchInput").autocomplete({
-        source:tripTitles.concat(tripPlaces)
-      });
-      $(".ui-autocomplete").attr({
-        'z-index':10000000000,
-        'display':'block'
-      })
+      // $("#searchInput").autocomplete({
+      //   source:tripTitles.concat(tripPlaces)
+      // });
+      // $(".ui-autocomplete").attr({
+      //   'z-index':10000000000,
+      //   'display':'block'
+      // })
       //TODO: show up the match pins on map:
       searchbtn.click(function(e){
         e.preventDefault();
         var searchString = searchInput.val();
-        var results = searchTrips(tripPlaces, tripTitles, trips, searchString);
+        var results = searchTrips(trips, searchString);
         addTripSearchResults(results);
         console.log("added search results");
         setMarkers(map, results, "trips");
         
+      });
+      searchInput.keyup(function () {
+        //hide all div and show the right ones
+        var searchString = searchInput.val();
+        var results = searchTrips(trips, searchString);
+        addTripSearchResults(results);
+        //setMarkers(map, results, "trips");
+      });
+      searchInput.change(function () {
+        var searchString = searchInput.val();
+        var results = searchTrips(trips, searchString);
+        addTripSearchResults(results);
+        //setMarkers(map, results, "trips");
       });
     }
    //loadTripsEx(map);
@@ -257,7 +278,7 @@ function deleteMarkers() {
 
 //TODO: fix css of this?? It looks like bootstrap isn't really working hmm
 function addTripSearchResults(tripResults) {
-  console.log("trip results size is" + tripResults);
+  console.log("trip results size is" + tripResults.length);
   //clear previous results div
   $("#results").remove();
   var resultsDiv = $(document.createElement("div"));
@@ -266,8 +287,11 @@ function addTripSearchResults(tripResults) {
   for(var i = 0; i < tripResults.length; i++) {
     var link = $(document.createElement("a"));
     link.attr("href", tripResults[i].link);
-    link.css("padding" : "10px");
-    link.css("min-height": "20px");
+    link.addClass("col-md-12");
+    link.css({
+      "padding" : "10px",
+      "min-height":"20px"
+    });
     var heading = $(document.createElement("h4"));
     heading.attr("class", "list-group-item-heading");
     //Why are neither of these working: ???
@@ -276,9 +300,8 @@ function addTripSearchResults(tripResults) {
     text.attr("class", "list-group-item-text");
 
     //Why are none of these working???:
-    text.text(tripResults[i].description);
+    text.text(tripResults[i].location);
     //TODO: image thumbnail and view button
-    
     var thumb = $(document.createElement("img"));
     thumb.attr("src", tripResults[i].img);
     thumb.css({
@@ -300,7 +323,7 @@ function addTripSearchResults(tripResults) {
   contentDiv.append(resultsDiv);
 }
 
-  function searchTrips(tripPlaces, tripTitles, trips, searchString) {
+  function searchTrips(trips,searchString) {
     var results = []; //will contain all the indices for trips array that match the search string
     //remove all markers
     // Deletes all markers in the array by removing references to them.
@@ -308,14 +331,15 @@ function addTripSearchResults(tripResults) {
 
     for(var i = 0; i < trips.length; i++) {
       //make uppercase (case insensitive)
-      var place = tripPlaces[i].toUpperCase();
-      var title = tripTitles[i].toUpperCase();
+      var curtrip =trips[i];
+      var place = curtrip.location.toUpperCase();
+      var title = curtrip.title.toUpperCase();
       //check for a match
       if(place.indexOf(searchString.toUpperCase()) > -1) {
-       results.push(trips[i]);
+       results.push(curtrip);
      }
      else if(title.indexOf(searchString.toUpperCase()) > -1) {
-      results.push(trips[i]);
+      results.push(curtrip);
      }
     }
 
@@ -348,14 +372,14 @@ function addTripSearchResults(tripResults) {
 // 	trips.push(trip_obj);
 // 	setMarkers(map, trips, "trips");
 
+// // }
+
+// function loadTrips(map, trips) {
+
+//    console.log("get trips about to set markers");
+//    setMarkers(map, trips, "trips");
+//    console.log("set markers");
 // }
-
-function loadTrips(map, trips) {
-
-   console.log("get trips about to set markers");
-   setMarkers(map, trips, "trips");
-   console.log("set markers");
-}
 
 function getLatandLngFromInput(input){
 	var autocomplete = new google.maps.places.Autocomplete(input);
