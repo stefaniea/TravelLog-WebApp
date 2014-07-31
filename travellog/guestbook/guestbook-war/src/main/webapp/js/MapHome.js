@@ -221,7 +221,7 @@ function that initialize the map in the page
       contentDiv.append(searchForm);
       searchInput.focus(function(e){
       e.preventDefault(); //prevent it from scrolling the page (maybe??)
-});
+      });
       // $("#searchInput").autocomplete({
       //   source:tripTitles.concat(tripPlaces)
       // });
@@ -337,8 +337,7 @@ function addTripSearchResults(tripResults) {
 }
 
   function searchTrips(trips,searchString) {
-    var results = []; //will contain all the indices for trips array that match the search string
-    //remove all markers
+    var results = []; 
     // Deletes all markers in the array by removing references to them.
     deleteMarkers();
 

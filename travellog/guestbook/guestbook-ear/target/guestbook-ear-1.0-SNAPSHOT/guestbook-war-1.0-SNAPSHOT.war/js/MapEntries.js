@@ -133,7 +133,7 @@ function that initialize the map in the page
       zoom: 10,
       center: new google.maps.LatLng(-34.397, 150.644),
       mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
+    }
     markers = [];
     var map = new google.maps.Map(
       mapCanvas,
@@ -200,6 +200,8 @@ function that initialize the map in the page
         clearInterval(interval);
       }
     }, 200);
+    
+  }
 
     function createSearchBar(){
       /**HERE IS THE SEARCH BAR~~**/
@@ -225,6 +227,9 @@ function that initialize the map in the page
       searchdiv.append(searchInput);
       searchForm.append(searchdiv).append(searchbtn);
       contentDiv.append(searchForm);
+      searchInput.focus(function(e){
+      e.preventDefault(); //prevent it from scrolling the page (maybe??)
+      });
       // $("#searchInput").autocomplete({
       //   source:tripTitles.concat(tripPlaces)
       // });
@@ -239,7 +244,7 @@ function that initialize the map in the page
         var results = searchEntries(entries, searchString);
         addEntriesSearchResults(results);
         console.log("added search results");
-        setMarkers(map, results, "entry");
+        setMarkers(map, results, "entries");
         
       });
       searchInput.keyup(function () {
@@ -247,18 +252,18 @@ function that initialize the map in the page
         var searchString = searchInput.val();
         var results = searchEntries(entries, searchString);
         addEntriesSearchResults(results);
-        setMarkers(map, results, "entry");
+        //setMarkers(map, results, "trips");
       });
       searchInput.change(function () {
         var searchString = searchInput.val();
         var results = searchEntries(entries, searchString);
         addEntriesSearchResults(results);
-        setMarkers(map, results, "entry");
+        //setMarkers(map, results, "trips");
       });
-
     }
-  }
-  google.maps.event.addDomListener(window, "load", initialize);
+   //loadTripsEx(map);
+  
+  
   function addEntriesSearchResults(entriesresults) {
     // console.log("trip results size is" + tripResults.length);
   //clear previous results div
@@ -316,7 +321,7 @@ function that initialize the map in the page
   }
 
   function searchEntries(entries, searchString) {
-    var results = []; //will contain all the indices for trips array that match the search string
+    var results = [];
     //remove all markers
     // Deletes all markers in the array by removing references to them.
     deleteMarkers();
@@ -338,6 +343,8 @@ function that initialize the map in the page
     return results
   }
 
+    google.maps.event.addDomListener(window, "load", initialize);
+
 
   function getLatandLngFromInput(input){
     var autocomplete = new google.maps.places.Autocomplete(input);
@@ -348,31 +355,35 @@ function that initialize the map in the page
     return location;
   }
 
-  function setMarkers(map, entries, type) {
-    //TODO: custom pins
-    markers=[];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < entries.length; i++) {
-    if(type == "entry") { /* anything special for entries? */ }
-    if(type == "trip") { /* anything special for entries? */ }
-    if(entries[i].lat === " " || entries[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
-    if(entries[i].lat == null || entries[i].lon == null) continue; 
-    if(entries[i].location == null || entries[i].location === "") continue;
-      var myLatLng = new google.maps.LatLng(entries[i].lat, entries[i].lon);
-     var marker = new google.maps.Marker({
+  function setMarkers(map, locations, type) {
+  //TODO: custom pins
+  var iconurl;//we should have different icons for new trip, trip, entry, and new entry.
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < locations.length; i++) {
+    if(locations[i].lat === " " || locations[i].lon === " ") continue; //skip empty lat/longitudes, markers won't show up for those
+    if(locations[i].lat == null || locations[i].lon == null) continue; 
+    if(locations[i].location == null || locations[i].location === "") continue;
+    console.log("marker again");
+  if(type == "entry") { /* anything special for entries? */ }
+  else if(type == "trip") { /* anything special for trips? */ }
+  else if(type == "newTrip"){/**/};
+  var myLatLng = new google.maps.LatLng(locations[i].lat, locations[i].lon);
+  var marker = new google.maps.Marker({
     position: myLatLng,
     map: map,
     icon: {url: "./images/pushpin.png", scaledSize: new google.maps.Size(40, 40) },
-    title: entries[i].title,
+    title: locations[i].title,
     zIndex: 1,
     animation: google.maps.Animation.DROP,
   });
-    bounds.extend(myLatLng);
-    setInfoWindow(map, marker, entries[i], "google.com");
-    }
-    markers.push(marker);
-    map.fitBounds(bounds);
+  bounds.extend(myLatLng);
+   console.log("setting info window");
+  setInfoWindow(map, marker, locations[i], "google.com");
+  console.log("set info window");
   }
+
+  map.fitBounds(bounds);
+}
   // Sets the map on all markers in the array.
   function setAllMap(map) {
     for (var i = 0; i < markers.length; i++) {
