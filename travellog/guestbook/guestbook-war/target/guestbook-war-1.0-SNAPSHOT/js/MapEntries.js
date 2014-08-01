@@ -190,7 +190,7 @@ function that initialize the map in the page
       entries.push(entry_obj);
     }
     setMarkers(map, entries, "entry");
-    createSearchBar();
+    createSearchBar(entries);
     addEntriesSearchResults(entries);
   });
 
@@ -200,10 +200,8 @@ function that initialize the map in the page
         clearInterval(interval);
       }
     }, 200);
-    
-  }
 
-    function createSearchBar(){
+    function createSearchBar(entries){
       /**HERE IS THE SEARCH BAR~~**/
       var searchForm = $(document.createElement('form'));
       searchForm.attr('role','search');
@@ -262,7 +260,7 @@ function that initialize the map in the page
       });
     }
    //loadTripsEx(map);
-  
+  }
   
   function addEntriesSearchResults(entriesresults) {
     // console.log("trip results size is" + tripResults.length);

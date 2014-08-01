@@ -190,7 +190,7 @@ function that initialize the map in the page
       entries.push(entry_obj);
     }
     setMarkers(map, entries, "entry");
-    createSearchBar();
+    createSearchBar(entries);
     addEntriesSearchResults(entries);
   });
 
@@ -201,7 +201,7 @@ function that initialize the map in the page
       }
     }, 200);
 
-    function createSearchBar(){
+    function createSearchBar(entries){
       /**HERE IS THE SEARCH BAR~~**/
       var searchForm = $(document.createElement('form'));
       searchForm.attr('role','search');
